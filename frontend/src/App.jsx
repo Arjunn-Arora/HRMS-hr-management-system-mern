@@ -15,6 +15,8 @@ import SetPassword from "./pages/SetPassword";
 import ViewAttendance from "./pages/ViewAttendance";
 import EditProfile from "./pages/EditProfile";
 import AssignProjects from "./pages/AssignProjects";
+import AllocatedProjects from "./pages/AllocatedProjects";
+import AssignEmployeesToProject from "./pages/AssignEmployeesToProjects";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
@@ -104,6 +106,24 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr", "admin"]}>
       <AssignProjects />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/teamlead/projects"
+  element={
+    <PrivateRoute allowedRoles={["team_lead"]}>
+      <AllocatedProjects />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/teamlead/assign/:projectId"
+  element={
+    <PrivateRoute allowedRoles={["team_lead"]}>
+      <AssignEmployeesToProject />
     </PrivateRoute>
   }
 />
