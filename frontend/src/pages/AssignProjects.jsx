@@ -6,6 +6,8 @@ const AssignProjects = () => {
   const [teamLeads, setTeamLeads] = useState([]);
   const [selectedLead, setSelectedLead] = useState("");
   const [projectName, setProjectName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [deadline, setDeadline] = useState("");
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -49,10 +51,16 @@ const AssignProjects = () => {
           <option value="">Select Team Lead</option>
           {teamLeads.map((lead) => (
             <option key={lead._id} value={lead._id}>
-              {lead.name} ({lead.email})
+              {lead.name}
             </option>
           ))}
         </select>
+
+        <label htmlFor="start-date">Start Date: </label>
+        <input type="date" name="start-date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /> <br />
+        <label htmlFor="end-date">End Date: </label>
+        <input type="date" name="end-date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+
 
         <input
           type="text"

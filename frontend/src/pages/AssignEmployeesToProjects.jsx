@@ -9,6 +9,23 @@ const AssignEmployeesToProject = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [alreadyAssigned, setAlreadyAssigned] = useState([]);
+
+useEffect(() => {
+  const fetchAssignedEmployees = async () => {
+    try {
+      const res = await axios.get(`/teamlead/project/${projectId}`, {
+        withCredentials: true
+      });
+      setAlreadyAssigned(res.data.assignedEmployeeIds);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  fetchAssignedEmployees();
+}, [projectId]);
+
   useEffect(() => {
     const fetchMembers = async () => {
       try {
@@ -62,12 +79,16 @@ const AssignEmployeesToProject = () => {
               <td className="border px-4 py-2">{member.name}</td>
               <td className="border px-4 py-2">{member.department}</td>
               <td className="border px-4 py-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(member._id)}
-                  onChange={() => handleToggle(member._id)}
-                />
-              </td>
+  {alreadyAssigned.includes(member._id) ? (
+    <span className="text-gray-500">Assigned</span>
+  ) : (
+    <input
+      type="checkbox"
+      checked={selectedIds.includes(member._id)}
+      onChange={() => handleToggle(member._id)}
+    />
+  )}
+</td>
             </tr>
           ))}
         </tbody>

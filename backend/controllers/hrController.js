@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Project from "../models/Project.js";
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 
@@ -101,17 +102,35 @@ export const getAllTeamLeads = async (req, res) => {
 
 export const assignProjectToTeamLead = async (req, res) => {
   try {
-    const { teamLeadId, projectName } = req.body;
-    if (!teamLeadId || !projectName) return res.status(400).json({ message: "Missing fields" });
+    const { teamLeadId, projectName, startDate, deadline } = req.body;
 
-    const lead = await User.findByIdAndUpdate(teamLeadId, { projectName }, { new: true });
-    if (!lead) return res.status(404).json({ message: "Team lead not found" });
+    if (!teamLeadId || !projectName) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
-    // Assign same project to all employees under this team lead
-    await User.updateMany({ teamLeadId }, { projectName });
+    // Validate team lead exists
+    const lead = await User.findById(teamLeadId);
+    if (!lead || lead.role !== "team_lead") {
+      return res.status(404).json({ message: "Team lead not found" });
+    }
 
-    res.status(200).json({ message: "Project assigned to team lead and team members" });
+    // Find all employees under this team lead
+    const teamMembers = await User.find({ teamLeadId });
+    const employeeIds = teamMembers.map(emp => emp._id);
+
+    // Create the project
+    const project = await Project.create({
+      name: projectName,
+      startDate,
+      deadline,
+      assignedTo: teamLeadId,
+      employees: employeeIds
+    });
+
+    res.status(201).json({ message: "Project assigned successfully", project });
   } catch (error) {
+    console.error("Error in assigning project:", error);
     res.status(500).json({ message: "Failed to assign project", error: error.message });
   }
 };
+
