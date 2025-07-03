@@ -6,6 +6,10 @@ const attendanceSchema = new mongoose.Schema({
   markedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   markedByName: { type: String },
   isPresent: { type: Boolean, default: false },
+  projectId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Project"
+},
   markedAt: { type: Date, default: Date.now }
 });
 

@@ -54,7 +54,7 @@ const ViewAttendance = () => {
         <td className="border px-4 py-2">
           {new Date(r.markedAt).toLocaleDateString()}
         </td>
-        <td className="border px-4 py-2">{r.projectName || "N/A"}</td>
+       <td className="border px-4 py-2">{r.projectName || "N/A"}</td>
         <td className="border px-4 py-2">{r.markedByName}</td>
         <td className="border px-4 py-2">
           {new Date(r.markedAt).toLocaleTimeString()}

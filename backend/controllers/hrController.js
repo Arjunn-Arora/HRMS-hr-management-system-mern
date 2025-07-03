@@ -120,12 +120,21 @@ export const assignProjectToTeamLead = async (req, res) => {
 
     // Create the project
     const project = await Project.create({
-      name: projectName,
-      startDate,
-      deadline,
-      assignedTo: teamLeadId,
-      employees: employeeIds
-    });
+  name: projectName,
+  startDate,
+  deadline,
+  assignedTo: teamLeadId,
+  employees: [] // empty initially
+});
+
+
+await User.updateMany(
+  { _id: { $in: employeeIds } },
+  {
+    projectName: project.name,
+    projectId: project._id
+  }
+);
 
     res.status(201).json({ message: "Project assigned successfully", project });
   } catch (error) {

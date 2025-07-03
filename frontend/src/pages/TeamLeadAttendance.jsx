@@ -41,14 +41,15 @@ const TeamLeadAttendance = () => {
   setModalOpen(false);
   try {
     const attendanceData = teamMembers
-      .filter((member) => presentIds.includes(member._id))
-      .map((member) => ({
-        employeeId: member._id,
-        projectName: member.projectName || "Not Assigned",
-        isPresent: true
-      }));
-
-    await axios.post("/attendance/mark", { attendanceData });
+  .filter((member) => presentIds.includes(member._id))
+  .map((member) => ({
+  employeeId: member._id,
+  projectName: member.projectName || "Not Assigned",
+  projectId: member.projectId,
+  isPresent: true
+}));
+    console.log("Submitting Attendance Data:", attendanceData);
+    await axios.post("/attendance/mark", { attendanceData }, { withCredentials: true });
 
     toast.success("Attendance submitted successfully!");
     setPresentIds([]);

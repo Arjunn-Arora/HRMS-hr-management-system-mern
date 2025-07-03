@@ -4,12 +4,32 @@ import Project from "../models/Project.js";
 export const getMyTeamMembers = async (req, res) => {
   try {
     const teamLeadId = req.user.userId;
-    const members = await User.find({ teamLeadId, role: "employee" }).select("name department email");
-    res.json(members);
+
+    const projects = await Project.find({ assignedTo: teamLeadId }).populate("employees");
+
+    const allEmployees = projects.flatMap((project) =>
+      project.employees.map((emp) => ({
+        _id: emp._id.toString(),
+        name: emp.name,
+        email: emp.email,
+        department: emp.department,
+        projectId: project._id,
+        projectName: project.name
+      }))
+    );
+
+    // ✅ Deduplicate by employee _id
+    const uniqueEmployees = Array.from(
+      new Map(allEmployees.map(emp => [emp._id, emp])).values()
+    );
+
+    res.json(uniqueEmployees);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
 
 export const assignEmployeesToProject = async (req, res) => {
   try {
@@ -19,20 +39,16 @@ export const assignEmployeesToProject = async (req, res) => {
     const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: "Project not found" });
 
+    // Merge new and existing employees (avoid duplicates)
     project.employees = [...new Set([...project.employees, ...employeeIds])];
     await project.save();
-
-    // Optional: update users' project reference (if you store assigned project inside User model)
-    await User.updateMany(
-      { _id: { $in: employeeIds } },
-      { $addToSet: { projectName: project.name } } // Assuming you store projectName
-    );
 
     res.status(200).json({ message: "Employees assigned successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to assign employees", error: err.message });
   }
 };
+
 
 export const getAllocatedProjects = async (req, res) => {
   try {
