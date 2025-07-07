@@ -100,6 +100,7 @@ const HRDashboard = () => {
         <Card icon={<FaCogs />} label="Manage Roles & Dept." link="/hr/manage-roles" />
         <Card icon={<FaFileUpload />} label="Upload Docs" link="/hr/uploads" />
         <Card icon={<FaChartBar />} label="Leave Dashboard" link="/hr/leaves" />
+        <Card icon={<FaChartBar />} label="Create/Edit Leave Policies" link="/hr/leave-policies" />
         <Card icon={<FaMoneyBillWave />} label="Payroll" link="/hr/payroll" />
         <Card icon={<FaDownload />} label="Export Reports" link="/hr/reports" />
         <Card icon={<FaClipboardList />} label="Assign Projects" link="/hr/assign-projects" />

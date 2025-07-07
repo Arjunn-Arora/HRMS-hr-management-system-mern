@@ -17,11 +17,14 @@ import EditProfile from "./pages/EditProfile";
 import AssignProjects from "./pages/AssignProjects";
 import AllocatedProjects from "./pages/AllocatedProjects";
 import AssignEmployeesToProject from "./pages/AssignEmployeesToProjects";
+import ApplyLeave from "./pages/ApplyLeave";
+import LeavePolicies from "./pages/LeavePolicies";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
 // Auth wrapper
 import PrivateRoute from "./components/PrivateRoute";
+import LeaveDashboard from "./pages/LeaveDashboard";
 
 function App() {
   return (
@@ -106,6 +109,33 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr", "admin"]}>
       <AssignProjects />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/leaves"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <LeaveDashboard />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/apply-leave"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <ApplyLeave />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/leave-policies"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <LeavePolicies />
     </PrivateRoute>
   }
 />
