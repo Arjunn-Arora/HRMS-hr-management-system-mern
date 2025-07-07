@@ -5,7 +5,7 @@ import { FaTrash, FaEdit, FaPlusCircle } from "react-icons/fa";
 
 const LeavePolicies = () => {
   const [policies, setPolicies] = useState([]);
-  const [form, setForm] = useState({ name: "", totalDays: "" });
+  const [form, setForm] = useState({ name: "", totalDays: "", type: "Paid" });
   const [editingId, setEditingId] = useState(null);
 
   // Fetch policies on mount
@@ -15,7 +15,7 @@ const LeavePolicies = () => {
 
   const fetchPolicies = async () => {
     try {
-      const res = await axios.get("/leaves/policies", { withCredentials: true });
+      const res = await axios.get("/leaves/policy", { withCredentials: true });
       setPolicies(res.data);
     } catch (err) {
       toast.error(err.message);
@@ -35,7 +35,7 @@ const LeavePolicies = () => {
         await axios.put(`/leaves/policies/${editingId}`, form, { withCredentials: true });
         toast.success("Policy updated");
       } else {
-        await axios.post("/leaves/policies", form, { withCredentials: true });
+        await axios.post("/leaves/policy", form, { withCredentials: true });
         toast.success("Policy added");
       }
       setForm({ name: "", totalDays: "" });
@@ -77,6 +77,18 @@ const LeavePolicies = () => {
             onChange={handleChange}
             className="flex-1 p-2 border rounded"
           />
+
+        <select
+            name="type"
+            value={form.type}
+            onChange={handleChange}
+            className="w-40 p-2 border rounded"
+            >
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid</option>
+            <option value="Sick">Sick</option>
+        </select>
+
           <input
             type="number"
             name="totalDays"

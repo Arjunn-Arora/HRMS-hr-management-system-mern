@@ -16,10 +16,10 @@ const LeaveDashboard = () => {
 
   const fetchAllData = async () => {
     try {
-      const leaveRes = await axios.get("/leave/all", { withCredentials: true });
+      const leaveRes = await axios.get("/leaves/requests", { withCredentials: true });
       setLeaves(leaveRes.data);
 
-      const policyRes = await axios.get("/leave/policies", { withCredentials: true });
+      const policyRes = await axios.get("/leaves/policy", { withCredentials: true });
       setPolicies(policyRes.data);
 
       const statCount = { approved: 0, pending: 0, rejected: 0 };

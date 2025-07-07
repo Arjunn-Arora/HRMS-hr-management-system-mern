@@ -3,12 +3,19 @@ import LeaveRequest from "../models/LeaveRequest.js";
 
 export const createLeavePolicy = async (req, res) => {
   try {
-    const policy = await LeavePolicy.create(req.body);
+    const { name, type = "Paid", totalDays, description = "" } = req.body;
+
+    if (!name || !totalDays) {
+      return res.status(400).json({ message: "Name and totalDays are required" });
+    }
+
+    const policy = await LeavePolicy.create({ name, type, totalDays, description });
     res.status(201).json(policy);
   } catch (err) {
     res.status(500).json({ message: "Error creating policy", error: err.message });
   }
 };
+
 
 export const getAllLeavePolicies = async (req, res) => {
   try {
@@ -55,7 +62,7 @@ export const getMyLeaveBalance = async (req, res) => {
     const userId = req.user.userId;
 
     const policies = await LeavePolicy.find();
-    const leaves = await Leave.find({ employee: userId, status: "Approved" });
+    const leaves = await LeaveRequest.find({ employee: userId, status: "Approved" });
 
     const balance = policies.map(policy => {
       const used = leaves.filter(l => l.policy.toString() === policy._id.toString()).length;
@@ -76,7 +83,7 @@ export const getMyLeaveBalance = async (req, res) => {
 export const getMyLeaveHistory = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const history = await Leave.find({ employee: userId }).populate("policy", "name");
+    const history = await LeaveRequest.find({ employee: userId }).populate("policy", "name");
     res.json(history);
   } catch (err) {
     res.status(500).json({ message: "Error fetching history", error: err.message });
