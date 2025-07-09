@@ -9,7 +9,7 @@ const ApplyLeave = () => {
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
-        const res = await axios.get("/leave/policies", { withCredentials: true });
+        const res = await axios.get("/leaves/policy", { withCredentials: true });
         setPolicies(res.data);
       } catch (err) {
         toast.error(err.message);
@@ -21,7 +21,7 @@ const ApplyLeave = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/leave/apply", form, { withCredentials: true });
+      await axios.post("/leaves/apply", form, { withCredentials: true });
       toast.success("Leave application submitted");
       setForm({ policyId: "", startDate: "", endDate: "", reason: "" });
     } catch (err) {

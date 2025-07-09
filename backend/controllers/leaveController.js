@@ -28,12 +28,23 @@ export const getAllLeavePolicies = async (req, res) => {
 
 export const applyLeave = async (req, res) => {
   try {
-    const leave = await LeaveRequest.create({ ...req.body, employeeId: req.user.userId });
+    const { policyId, startDate, endDate, reason } = req.body;
+
+    const leave = await LeaveRequest.create({
+      employeeId: req.user.userId,
+      leavePolicy: policyId,  // ✅ map correctly
+      startDate,
+      endDate,
+      reason
+    });
+
     res.status(201).json(leave);
   } catch (err) {
+    console.error("Apply Leave Error:", err);
     res.status(500).json({ message: "Error applying leave", error: err.message });
   }
 };
+
 
 export const getLeaveRequests = async (req, res) => {
   try {
@@ -106,16 +117,41 @@ export const filterLeaves = async (req, res) => {
 };
 
 export const getLeaveStats = async (req, res) => {
-  const leaves = await Leave.find({ status: "Approved" }).populate("policy");
+  try {
+    const data = await LeaveRequest.aggregate([
+      { $match: { status: "Approved" } },
+      {
+        $group: {
+          _id: "$leavePolicy",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: "leavepolicies", // collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "policyInfo"
+        }
+      },
+      {
+        $unwind: "$policyInfo"
+      },
+      {
+        $project: {
+          _id: 0,
+          type: "$policyInfo.name",
+          count: 1
+        }
+      }
+    ]);
 
-  const stats = {};
-  leaves.forEach((leave) => {
-    const type = leave.policy.name;
-    stats[type] = (stats[type] || 0) + 1;
-  });
-
-  res.json(stats);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching stats", error: err.message });
+  }
 };
+
 
 export const updateLeavePolicy = async (req, res) => {
   try {
