@@ -20,6 +20,7 @@ import AssignEmployeesToProject from "./pages/AssignEmployeesToProjects";
 import ApplyLeave from "./pages/ApplyLeave";
 import LeavePolicies from "./pages/LeavePolicies";
 import LeaveApproval from "./pages/LeaveApproval";
+import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
@@ -131,6 +132,16 @@ function App() {
     </PrivateRoute>
   }
 />
+
+<Route
+  path="/employee/leaves"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <EmployeeLeaveDashboard />
+    </PrivateRoute>
+  }
+/>
+
 
 <Route
   path="/hr/leave-policies"

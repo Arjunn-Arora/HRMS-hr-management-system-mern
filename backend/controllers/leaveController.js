@@ -73,15 +73,30 @@ export const getMyLeaveBalance = async (req, res) => {
     const userId = req.user.userId;
 
     const policies = await LeavePolicy.find();
-    const leaves = await LeaveRequest.find({ employee: userId, status: "Approved" });
+    const approvedLeaves = await LeaveRequest.find({
+      employeeId: userId,
+      status: "Approved"
+    });
 
     const balance = policies.map(policy => {
-      const used = leaves.filter(l => l.policy.toString() === policy._id.toString()).length;
+      // Filter leaves under this policy
+      const leavesForPolicy = approvedLeaves.filter(
+        l => l.leavePolicy.toString() === policy._id.toString()
+      );
+
+      // Sum total days used
+      const used = leavesForPolicy.reduce((total, leave) => {
+        const start = new Date(leave.startDate);
+        const end = new Date(leave.endDate);
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // Inclusive
+        return total + days;
+      }, 0);
+
       return {
         policyName: policy.name,
-        allowed: policy.allowedDays,
+        allowed: policy.totalDays,
         used,
-        remaining: policy.allowedDays - used
+        remaining: policy.totalDays - used
       };
     });
 
@@ -94,7 +109,7 @@ export const getMyLeaveBalance = async (req, res) => {
 export const getMyLeaveHistory = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const history = await LeaveRequest.find({ employee: userId }).populate("policy", "name");
+    const history = await LeaveRequest.find({ employeeId: userId }).populate("leavePolicy", "name");
     res.json(history);
   } catch (err) {
     res.status(500).json({ message: "Error fetching history", error: err.message });

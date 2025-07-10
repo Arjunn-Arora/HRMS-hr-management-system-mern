@@ -71,7 +71,7 @@ const EmployeeDashboard = () => {
         <DashboardCard icon={<FaFileAlt />} title="Resume & Documents" desc="Upload or download your files" color="green" onClick={() => handleRedirect('/documents')} />
         <DashboardCard icon={<FaBell />} title="Announcements" desc="Stay up to date with HR updates" color="yellow" onClick={() => handleRedirect('/announcements')} />
         <DashboardCard icon={<FaCalendarCheck />} title="View Attendance" desc="Track your daily presence" color="purple" onClick={() => handleRedirect('/attendance')} />
-        <DashboardCard icon={<FaChartBar />} title="Apply For Leave" desc="View your leave stats" color="indigo" onClick={() => handleRedirect('/apply-leave')} />
+        <DashboardCard icon={<FaChartBar />} title="View Leaves" desc="View your leave stats" color="indigo" onClick={() => handleRedirect('/employee/leaves')} />
         <DashboardCard icon={<FaMoneyCheckAlt />} title="Payslip History" desc="Check your previous salary records" color="pink" onClick={() => handleRedirect('/payslips')} />
 
         {/* Additional Team Lead Features */}
