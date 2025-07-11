@@ -21,6 +21,8 @@ import ApplyLeave from "./pages/ApplyLeave";
 import LeavePolicies from "./pages/LeavePolicies";
 import LeaveApproval from "./pages/LeaveApproval";
 import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
+import Error400 from "./pages/Error400";
+import Error500 from "./pages/Error500";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
@@ -179,6 +181,10 @@ function App() {
     </PrivateRoute>
   }
 />
+
+<Route path="/400" element={<Error400 />} />
+<Route path="/500" element={<Error500 />} />
+
 
 
 <Route path="/verify/:token" element={<SetPassword />} />
