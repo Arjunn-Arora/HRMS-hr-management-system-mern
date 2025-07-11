@@ -1,19 +1,12 @@
+// src/pages/HRDashboard.jsx
 import React, { useEffect, useState } from 'react';
-import axios from '../utils/axiosInstance.js';
+import { NavLink, useNavigate } from 'react-router-dom';
+import axios from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import {
-  FaUsers,
-  FaCalendarAlt,
-  FaBell,
-  FaFileUpload,
-  FaUserPlus,
-  FaChartBar,
-  FaMoneyBillWave,
-  FaDownload,
-  FaCogs,
-  FaPlus,
-  FaSignOutAlt,
-  FaClipboardList
+  FaUsers, FaCalendarAlt, FaBell, FaUserPlus, FaCogs,
+  FaFileUpload, FaChartBar, FaMoneyBillWave, FaDownload,
+  FaClipboardList, FaSignOutAlt, FaHome,
 } from 'react-icons/fa';
 
 const HRDashboard = () => {
@@ -21,148 +14,175 @@ const HRDashboard = () => {
   const [employeeCount, setEmployeeCount] = useState(0);
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    async function load() {
       try {
-        const userRes = await axios.get("/auth/me", { withCredentials: true });
-        setUser(userRes.data.user);
-
-        const countRes = await axios.get("/hr/employees", { withCredentials: true });
-        setEmployeeCount(countRes.data.length);
-
-        const announceRes = await axios.get("/announcement/all", { withCredentials: true });
-        setAnnouncements(announceRes.data);
-      } catch (err) {
-        toast.error("Failed to load HR dashboard data");
-        console.log(err);
+        const me = await axios.get('/auth/me', { withCredentials: true });
+        const emps = await axios.get('/hr/employees', { withCredentials: true });
+        const anns = await axios.get('/announcement/all', { withCredentials: true });
+        setUser(me.data.user);
+        setEmployeeCount(emps.data.length);
+        setAnnouncements(anns.data);
+      } catch {
+        toast.error("Error loading dashboard");
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchDashboardData();
+    }
+    load();
   }, []);
 
-  const handleAddAnnouncement = async () => {
-    if (!newAnnouncement.trim()) return toast.error("Please enter a message");
+  const postAnnouncement = async () => {
+    if (!newAnnouncement.trim()) return toast.error("Enter a message");
     try {
       const res = await axios.post(
-        "/announcement/create",
-        { title: "New Announcement", message: newAnnouncement },
+        '/announcement/create',
+        { title: 'HR Update', message: newAnnouncement },
         { withCredentials: true }
       );
-      toast.success("Announcement added!");
-      setAnnouncements([res.data, ...announcements]);
-      setNewAnnouncement("");
-      setShowModal(false);
-    } catch (err) {
-      toast.error("Failed to post announcement");
-      console.error(err);
+      setAnnouncements(prev => [res.data, ...prev]);
+      setNewAnnouncement('');
+      toast.success("Posted!");
+    } catch {
+      toast.error("Failed to post");
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("/auth/logout", {}, { withCredentials: true });
-      toast.success("Logged out successfully");
-      window.location.href = "/"; // Redirect to login
-    } catch (err) {
-      toast.error(err.message);
-    }
+  const logout = async () => {
+    await axios.post('/auth/logout', {}, { withCredentials: true });
+    navigate('/');
   };
 
-  if (loading || !user) return <div className="text-center mt-10">Loading Dashboard...</div>;
+  if (loading) {
+    return <div className="flex h-screen items-center justify-center text-xl">Loading...</div>;
+  }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Top Bar with Logout */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">HR Dashboard</h1>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <aside className="w-1/5 bg-white shadow-lg px-6 pt-8 flex flex-col">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-semibold">{user.name}</h2>
+          <p className="mt-1 text-gray-500">HR Manager</p>
+        </div>
+        <nav className="flex-1 space-y-1">
+          <SidebarLink to="/hr" icon={<FaHome />} label="Dashboard" />
+          <SidebarLink to="/hr/add-employee" icon={<FaUserPlus />} label="Add Employee" />
+          <SidebarLink to="/hr/manage-roles" icon={<FaCogs />} label="Roles & Dept." />
+          <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Projects" />
+          <SidebarLink to="/hr/leaves" icon={<FaChartBar />} label="Leave Dashboard" />
+          <SidebarLink to="/hr/leave-policies" icon={<FaChartBar />} label="Leave Policies" />
+          <SidebarLink to="/hr/payroll" icon={<FaMoneyBillWave />} label="Payroll" />
+          <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Reports & Logs" />
+          <SidebarLink to="/hr/uploads" icon={<FaFileUpload />} label="Docs Upload" />
+        </nav>
         <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          onClick={logout}
+          className="flex items-center justify-center gap-2 mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
         >
           <FaSignOutAlt /> Logout
         </button>
-      </div>
+      </aside>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card icon={<FaUsers />} label="Total Employees" value={employeeCount} />
-        <Card icon={<FaCalendarAlt />} label="Attendance Reports" value={<button className="text-sm text-blue-600 hover:underline">View</button>} />
-        <Card icon={<FaBell />} label="New Announcements" value={announcements.length} />
-      </div>
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-auto">
+        <header className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-extrabold text-gray-800">Welcome, {user.name}</h1>
+        </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card icon={<FaUserPlus />} label="Add Employee" link="/hr/add-employee" />
-        <Card icon={<FaCogs />} label="Manage Roles & Dept." link="/hr/manage-roles" />
-        <Card icon={<FaFileUpload />} label="Upload Docs" link="/hr/uploads" />
-        <Card icon={<FaChartBar />} label="Leave Dashboard" link="/hr/leaves" />
-        <Card icon={<FaChartBar />} label="Create/Edit Leave Policies" link="/hr/leave-policies" />
-        <Card icon={<FaMoneyBillWave />} label="Payroll" link="/hr/payroll" />
-        <Card icon={<FaDownload />} label="Export Reports" link="/hr/reports" />
-        <Card icon={<FaClipboardList />} label="Assign Projects" link="/hr/assign-projects" />
-      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          <MetricCard icon={<FaUsers />} label="Employees" value={employeeCount} />
+          <MetricCard
+            icon={<FaCalendarAlt />}
+            label="Attendance"
+            value={<button onClick={() => navigate('/attendance')} className="text-indigo-600 underline">View</button>}
+          />
+          <MetricCard icon={<FaBell />} label="Announcements" value={announcements.length} />
+        </div>
 
-      {/* Add Announcement Button */}
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-700">Latest Announcements</h2>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-        >
-          <FaPlus className="mr-2" /> Add Announcement
-        </button>
-      </div>
-
-      {/* Announcement List */}
-      <ul className="bg-white rounded-xl shadow p-4 divide-y divide-gray-200">
-        {announcements.map((ann, i) => (
-          <li key={i} className="py-3">
-            <p className="text-gray-800">{ann.message}</p>
-            <p className="text-sm text-gray-500">— {ann.createdBy?.name || "Unknown"} | {ann.createdBy?.role || "N/A"}</p>
-          </li>
-        ))}
-      </ul>
-
-      {/* Modal for Adding Announcement */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Add New Announcement</h2>
-            <textarea
-              rows="4"
-              className="w-full border rounded-md p-2 mb-4"
-              placeholder="Write announcement..."
-              value={newAnnouncement}
-              onChange={(e) => setNewAnnouncement(e.target.value)}
-            />
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 border rounded-md">Cancel</button>
-              <button onClick={handleAddAnnouncement} className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Post</button>
+        <section className="mb-10">
+          <div className="flex justify-between mb-4">
+            <h2 className="text-2xl font-semibold">Latest Announcements</h2>
+            <div className="flex gap-2">
+              <textarea
+                rows={2}
+                className="flex-grow p-3 border rounded-lg"
+                placeholder="Add announcement..."
+                value={newAnnouncement}
+                onChange={e => setNewAnnouncement(e.target.value)}
+              />
+              <button
+                onClick={postAnnouncement}
+                className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+              >
+                Post
+              </button>
             </div>
           </div>
-        </div>
-      )}
+          <div className="bg-white rounded-lg shadow divide-y">
+            {announcements.map((a, idx) => (
+              <div key={idx} className="p-4 flex justify-between items-center hover:bg-gray-50 transition">
+                <span className="text-gray-800">{a.message}</span>
+                <small className="text-gray-500">{new Date(a.createdAt).toLocaleDateString()}</small>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <ActionCard icon={<FaUserPlus />} label="Add Employee" to="/hr/add-employee" />
+            <ActionCard icon={<FaCogs />} label="Manage Roles" to="/hr/manage-roles" />
+            <ActionCard icon={<FaClipboardList />} label="Projects" to="/hr/assign-projects" />
+            <ActionCard icon={<FaChartBar />} label="Leave Dashboard" to="/hr/leaves" />
+            <ActionCard icon={<FaChartBar />} label="Policies" to="/hr/leave-policies" />
+            <ActionCard icon={<FaMoneyBillWave />} label="Payroll" to="/hr/payroll" />
+            <ActionCard icon={<FaDownload />} label="Reports" to="/hr/reports" />
+            <ActionCard icon={<FaFileUpload />} label="Uploads" to="/hr/uploads" />
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
 
-// Reusable Card Component
-const Card = ({ icon, label, value, link }) => {
-  const content = (
-    <div className="bg-white shadow-md rounded-2xl p-5 flex items-center space-x-4 hover:shadow-lg transition cursor-pointer">
-      <div className="text-3xl text-indigo-600">{icon}</div>
-      <div>
-        <p className="text-gray-600">{label}</p>
-        <h2 className="text-xl font-semibold">{value}</h2>
-      </div>
-    </div>
-  );
+// Reusable Components
+const SidebarLink = ({ to, icon, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `flex items-center gap-3 px-4 py-2 rounded-lg ${
+        isActive ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-600 hover:bg-gray-100'
+      } transition`
+    }
+  >
+    <span className="text-xl">{icon}</span>
+    {label}
+  </NavLink>
+);
 
-  return link ? <a href={link}>{content}</a> : content;
-};
+const MetricCard = ({ icon, label, value }) => (
+  <div className="bg-white rounded-lg shadow p-6 flex items-center gap-4">
+    <div className="text-indigo-600 text-3xl">{icon}</div>
+    <div>
+      <div className="text-gray-500">{label}</div>
+      <div className="text-2xl font-bold">{value}</div>
+    </div>
+  </div>
+);
+
+const ActionCard = ({ icon, label, to }) => (
+  <div
+    onClick={() => window.location.href = to}
+    className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition cursor-pointer"
+  >
+    <div className="text-indigo-600 text-4xl">{icon}</div>
+    <div className="mt-3 font-medium text-gray-800">{label}</div>
+  </div>
+);
 
 export default HRDashboard;
