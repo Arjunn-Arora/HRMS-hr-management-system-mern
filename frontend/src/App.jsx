@@ -23,12 +23,14 @@ import LeaveApproval from "./pages/LeaveApproval";
 import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
 import Error400 from "./pages/Error400";
 import Error500 from "./pages/Error500";
+import HRUserList from "./pages/HRUserList";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
 // Auth wrapper
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveDashboard from "./pages/LeaveDashboard";
+import PayrollDashboard from "./pages/PayrollDashboard";
 
 function App() {
   return (
@@ -178,6 +180,24 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <LeaveApproval />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/users"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <HRUserList />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/payroll"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <PayrollDashboard />
     </PrivateRoute>
   }
 />

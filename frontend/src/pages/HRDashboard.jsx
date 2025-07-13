@@ -6,7 +6,8 @@ import { toast } from 'react-toastify';
 import {
   FaUsers, FaCalendarAlt, FaBell, FaUserPlus, FaCogs,
   FaFileUpload, FaChartBar, FaMoneyBillWave, FaDownload,
-  FaClipboardList, FaSignOutAlt, FaHome,
+  FaClipboardList, FaSignOutAlt, FaHome, 
+  FaUser, 
 } from 'react-icons/fa';
 
 const HRDashboard = () => {
@@ -63,29 +64,38 @@ const HRDashboard = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-1/5 bg-white shadow-lg px-6 pt-8 flex flex-col">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-semibold">{user.name}</h2>
-          <p className="mt-1 text-gray-500">HR Manager</p>
-        </div>
-        <nav className="flex-1 space-y-1">
-          <SidebarLink to="/hr" icon={<FaHome />} label="Dashboard" />
-          <SidebarLink to="/hr/add-employee" icon={<FaUserPlus />} label="Add Employee" />
-          <SidebarLink to="/hr/manage-roles" icon={<FaCogs />} label="Roles & Dept." />
-          <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Projects" />
-          <SidebarLink to="/hr/leaves" icon={<FaChartBar />} label="Leave Dashboard" />
-          <SidebarLink to="/hr/leave-policies" icon={<FaChartBar />} label="Leave Policies" />
-          <SidebarLink to="/hr/payroll" icon={<FaMoneyBillWave />} label="Payroll" />
-          <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Reports & Logs" />
-          <SidebarLink to="/hr/uploads" icon={<FaFileUpload />} label="Docs Upload" />
-        </nav>
-        <button
-          onClick={logout}
-          className="flex items-center justify-center gap-2 mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-        >
-          <FaSignOutAlt /> Logout
-        </button>
-      </aside>
+      <aside className="w-1/5 bg-white shadow-lg px-6 pt-9 flex flex-col justify-between">
+  {/* Top Section - Profile and Nav */}
+  <div>
+    <div className="mb-8 text-center">
+      <h2 className="text-2xl font-semibold">{user.name}</h2>
+      <p className="mt-1 text-gray-500">HR Manager</p>
+    </div>
+    <nav className="space-y-1">
+      <SidebarLink to="/hr" icon={<FaHome />} label="Dashboard" />
+      <SidebarLink to="/hr/add-employee" icon={<FaUserPlus />} label="Add Employee" />
+      <SidebarLink to="/hr/users" icon={<FaUsers />} label="View Employee" />
+      <SidebarLink to="/hr/manage-roles" icon={<FaCogs />} label="Roles & Dept." />
+      <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Projects" />
+      <SidebarLink to="/hr/leaves" icon={<FaChartBar />} label="Leave Dashboard" />
+      <SidebarLink to="/hr/leave-policies" icon={<FaChartBar />} label="Leave Policies" />
+      <SidebarLink to="/hr/payroll" icon={<FaMoneyBillWave />} label="Payroll" />
+      <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Reports & Logs" />
+      <SidebarLink to="/hr/uploads" icon={<FaFileUpload />} label="Docs Upload" />
+    </nav>
+  </div>
+
+  {/* Bottom Section - Logout */}
+  <div className="mb-6">
+    <button
+      onClick={logout}
+      className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2 py-2 rounded-lg"
+    >
+      <FaSignOutAlt /> Logout
+    </button>
+  </div>
+</aside>
+
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
@@ -136,6 +146,7 @@ const HRDashboard = () => {
           <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <ActionCard icon={<FaUserPlus />} label="Add Employee" to="/hr/add-employee" />
+            <ActionCard icon={<FaUserPlus />} label="View Employee" to="/hr/users" />
             <ActionCard icon={<FaCogs />} label="Manage Roles" to="/hr/manage-roles" />
             <ActionCard icon={<FaClipboardList />} label="Projects" to="/hr/assign-projects" />
             <ActionCard icon={<FaChartBar />} label="Leave Dashboard" to="/hr/leaves" />
