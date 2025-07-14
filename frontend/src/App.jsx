@@ -24,6 +24,7 @@ import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
 import Error400 from "./pages/Error400";
 import Error500 from "./pages/Error500";
 import HRUserList from "./pages/HRUserList";
+import SalaryStructureModal from "./pages/SalaryStructureModel";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
 
@@ -31,6 +32,7 @@ import HRUserList from "./pages/HRUserList";
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveDashboard from "./pages/LeaveDashboard";
 import PayrollDashboard from "./pages/PayrollDashboard";
+import GeneratePayslipModal from "./pages/GeneratePayslipModel";
 
 function App() {
   return (
@@ -198,6 +200,24 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <PayrollDashboard />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/payroll/salary-structure"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <SalaryStructureModal />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/payroll/generate-payslip"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <GeneratePayslipModal />
     </PrivateRoute>
   }
 />
