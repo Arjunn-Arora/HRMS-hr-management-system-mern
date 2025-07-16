@@ -32,7 +32,7 @@ import SalaryStructureModal from "./pages/SalaryStructureModel";
 import PrivateRoute from "./components/PrivateRoute";
 import LeaveDashboard from "./pages/LeaveDashboard";
 import PayrollDashboard from "./pages/PayrollDashboard";
-import GeneratePayslipModal from "./pages/GeneratePayslipModel";
+import GeneratePayrollModal from "./pages/GeneratePayrollModel";
 
 function App() {
   return (
@@ -217,7 +217,7 @@ function App() {
   path="/hr/payroll/generate-payslip"
   element={
     <PrivateRoute allowedRoles={["hr"]}>
-      <GeneratePayslipModal />
+      <GeneratePayrollModal />
     </PrivateRoute>
   }
 />
