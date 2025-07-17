@@ -9,6 +9,7 @@ import {
   FaChartPie,
   FaBuilding,
 } from "react-icons/fa";
+
 import { toast } from "react-toastify";
 import SalaryStructureModal from "./SalaryStructureModel";
 import SalaryStructureTable from "./SalaryStructureTable";
