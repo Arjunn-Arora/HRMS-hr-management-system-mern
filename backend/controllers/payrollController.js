@@ -88,26 +88,25 @@ export const getPayslips = async (req, res) => {
 
 export const getPayrollSummary = async (req, res) => {
   try {
+    const { month, year } = req.query; // Get month and year from query params
     const payrolls = await PayrollRecord.find();
 
-    const totalPaid = payrolls
-      .filter(p => p.status === "Paid")
-      .reduce((sum, p) => sum + (p.netPay || 0), 0);
+    // Convert month string to lowercase for case-insensitive match
+    const filtered = payrolls.filter(p =>
+      (!month || p.month?.toLowerCase() === month.toLowerCase()) &&
+      (!year || p.year == year) &&
+      p.status === "Paid"
+    );
 
-    const employeeCount = new Set(
-      payrolls.filter(p => p.status === "Paid").map(p => p.employeeId.toString())
-    ).size;
+    const totalPaid = filtered.reduce((sum, p) => sum + (p.netPay || 0), 0);
+    const monthlyDeductions = filtered.reduce((sum, p) => sum + (p.deductions || 0), 0);
+    const employeeCount = new Set(filtered.map(p => p.employeeId.toString())).size;
 
-    const thisMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
-    const monthlyTotal = payrolls
-      .filter(p => p.month === thisMonth && p.status === "Paid")
-      .reduce((sum, p) => sum + (p.netPay || 0), 0);
-
-    const lastPayrollDate = payrolls.length > 0
-      ? new Date(Math.max(...payrolls.map(p => new Date(p.createdAt)))).toISOString()
+    const lastPayrollDate = filtered.length > 0
+      ? new Date(Math.max(...filtered.map(p => new Date(p.createdAt)))).toISOString()
       : null;
 
-    res.json({ totalPaid, employeeCount, monthlyTotal, lastPayrollDate });
+    res.json({ totalPaid, employeeCount, monthlyDeductions, lastPayrollDate });
   } catch (err) {
     res.status(500).json({ message: "Error fetching payroll summary", error: err.message });
   }

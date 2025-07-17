@@ -15,29 +15,44 @@ import SalaryStructureTable from "./SalaryStructureTable";
 import GeneratePayrollModal from "./GeneratePayrollModel";
 
 const PayrollDashboard = () => {
-  const [summary, setSummary] = useState({ totalPaid: 0, employeeCount: 0 });
+  const [summary, setSummary] = useState({ totalPaid: 0, employeeCount: 0, monthlyDeductions:0 });
   const [payrolls, setPayrolls] = useState([]);
   const [activeTab, setActiveTab] = useState("payroll"); // "payroll" or "structure"
-  const [monthFilter, setMonthFilter] = useState("");
+  const [monthFilter, setMonthFilter] = useState(() => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`; // "2025-07"
+});
   const [searchTerm, setSearchTerm] = useState("");
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [editStructure, setEditStructure] = useState(null);
 
   useEffect(() => {
-    fetchPayrollData();
-  }, []);
+  fetchPayrollData();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [monthFilter]);
 
   const fetchPayrollData = async () => {
-    try {
-      const res = await axios.get("/payroll/summary", { withCredentials: true });
-      const history = await axios.get("/payroll/history", { withCredentials: true });
-      setSummary(res.data);
-      setPayrolls(history.data);
-    } catch (err) {
-      toast.error(err.message);
+  try {
+    let month = "", year = "";
+    if (monthFilter) {
+      // eslint-disable-next-line no-unused-vars
+      const [y, m] = monthFilter.split("-");
+      const date = new Date(monthFilter);
+      month = date.toLocaleString("default", { month: "long" }); // "May"
+      year = y;
     }
-  };
+
+    const res = await axios.get(`/payroll/summary?month=${month}&year=${year}`, { withCredentials: true });
+    const history = await axios.get("/payroll/history", { withCredentials: true });
+    setSummary(res.data);
+    setPayrolls(history.data);
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
+
 
   const handleSaveStructure = async (data) => {
     try {
@@ -61,10 +76,19 @@ const PayrollDashboard = () => {
 };
 
   const filteredPayrolls = payrolls.filter((entry) => {
-    const matchesMonth = monthFilter ? entry.month.includes(monthFilter) : true;
-    const matchesSearch = entry.employeeName?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesMonth && matchesSearch;
-  });
+  if (!entry.month || !entry.year) return false;
+
+  const [selectedYear, selectedMonthNum] = monthFilter.split("-");
+  const selectedMonthName = new Date(`${selectedYear}-${selectedMonthNum}-01`).toLocaleString("default", { month: "long" });
+
+  const matchesMonth = entry.month.toLowerCase() === selectedMonthName.toLowerCase() &&
+                       String(entry.year) === selectedYear;
+
+  const matchesSearch = entry.employeeName?.toLowerCase().includes(searchTerm.toLowerCase());
+
+  return matchesMonth && matchesSearch;
+});
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -74,10 +98,10 @@ const PayrollDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <SummaryCard icon={<FaMoneyCheckAlt />} title="Total Paid" value={`₹${summary.totalPaid?.toLocaleString()}`} />
         <SummaryCard icon={<FaChartPie />} title="Employees Paid" value={summary.employeeCount} />
-        <SummaryCard icon={<FaFileInvoiceDollar />} title="This Month" value={`₹${summary.monthlyTotal?.toLocaleString() || 0}`} />
+        <SummaryCard icon={<FaFileInvoiceDollar />} title="Deductions" value={`₹${summary.monthlyDeductions?.toLocaleString() || 0}`} />
         <SummaryCard icon={<FaHistory />} title="Last Run" value={summary.lastPayrollDate ? new Date(summary.lastPayrollDate).toLocaleDateString() : "N/A"} />
       </div>
-
+      
       {/* Tabs */}
       <div className="mb-4 border-b border-gray-200">
         <nav className="-mb-px flex space-x-4 text-sm font-medium">

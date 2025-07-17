@@ -32,7 +32,6 @@ const GeneratePayrollModal = ({ onClose, onSuccess }) => {
   useEffect(() => {
   const match = structures.find(s => {
     const id = typeof s.employeeId === "object" ? s.employeeId._id : s.employeeId;
-    console.log(id);
     return id === selectedEmployee;
   });
   setStructure(match || null);
