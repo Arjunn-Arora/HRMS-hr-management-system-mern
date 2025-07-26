@@ -9,7 +9,7 @@ import {
   FaChartPie,
   FaBuilding,
 } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SalaryStructureModal from "./SalaryStructureModel";
 import SalaryStructureTable from "./SalaryStructureTable";
@@ -27,11 +27,18 @@ const PayrollDashboard = () => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [editStructure, setEditStructure] = useState(null);
+  const [selectedPayslip, setSelectedPayslip] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
   fetchPayrollData();
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [monthFilter]);
+if (selectedPayslip) {
+    navigate("/payslip", { state: { data: selectedPayslip } });
+    setSelectedPayslip(null); // Reset after navigation to prevent re-triggers
+  }
+}, [monthFilter, selectedPayslip, navigate]);
 
   const fetchPayrollData = async () => {
   try {
@@ -175,8 +182,8 @@ const PayrollDashboard = () => {
           <tr key={entry._id} className="border-t hover:bg-gray-50">
             <td className="p-3">{entry.employeeName}</td>
             <td className="p-3">{entry.month}</td>
-            <td className="p-3 font-medium text-green-700">₹{entry.netSalary?.toLocaleString()}</td>
-            <td className="p-3 text-red-500">₹{entry.deductions || 0}</td>
+            <td className="p-3 font-medium text-green-700">₹{entry.salaryDetails?.netPay?.toLocaleString()}</td>
+            <td className="p-3 text-red-500">₹{entry.salaryDetails?.deductions || 0}</td>
             <td className="p-3">
               <span className={`px-2 py-1 rounded text-xs font-semibold ${
                 entry.status === "Paid" ? "bg-green-500 text-white" : "bg-yellow-400 text-black"
@@ -185,10 +192,28 @@ const PayrollDashboard = () => {
               </span>
             </td>
             <td className="p-3">
-              {entry.payslipUrl ? (
-                <a href={entry.payslipUrl} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
-                  View PDF
-                </a>
+              {entry.status === "Paid" ? (
+                <button
+                  onClick={() =>
+                    setSelectedPayslip({
+                      employeeName: entry.employeeName,
+                      employeeId: entry.employeeId,
+                      email: entry.email || entry.employee?.email,
+                      department: entry.department || entry.employee?.department,
+                      month: entry.month,
+                      year: entry.year,
+                      basic: entry.salaryDetails?.basic || 0,
+                      hra: entry.salaryDetails?.hra || 0,
+                      allowances: entry.salaryDetails?.allowances || 0,
+                      gross: entry.salaryDetails?.gross || 0,
+                      deductions: entry.salaryDetails?.deductions || 0,
+                      netSalary: entry.salaryDetails?.netPay || 0,
+                    }) 
+                  }
+                  className="text-indigo-600 hover:underline"
+                >
+                  View Payslip
+                </button>
               ) : (
                 <span className="text-gray-400">N/A</span>
               )}
@@ -257,6 +282,14 @@ const PayrollDashboard = () => {
           }}
         />
       )}
+
+      {/* {selectedPayslip && (
+  <PayslipModal
+    data={selectedPayslip}
+    onClose={() => setSelectedPayslip(null)}
+  />
+)} */}
+
     </div>
   );
 };

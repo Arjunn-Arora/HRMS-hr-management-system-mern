@@ -33,6 +33,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import LeaveDashboard from "./pages/LeaveDashboard";
 import PayrollDashboard from "./pages/PayrollDashboard";
 import GeneratePayrollModal from "./pages/GeneratePayrollModel";
+import PayslipPage from "./pages/PayslipPage";
 
 function App() {
   return (
@@ -218,6 +219,15 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <GeneratePayrollModal />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/payslip"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <PayslipPage />
     </PrivateRoute>
   }
 />

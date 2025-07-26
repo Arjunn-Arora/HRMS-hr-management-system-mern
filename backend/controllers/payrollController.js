@@ -115,19 +115,27 @@ export const getPayrollSummary = async (req, res) => {
 
 export const getPayrollHistory = async (req, res) => {
   try {
-    const records = await PayrollRecord.find().populate("employeeId", "name email");
+    const records = await PayrollRecord.find().populate("employeeId", "name email department");
+
     const data = records.map((r) => ({
       _id: r._id,
       employeeName: r.employeeId?.name,
       employeeId: r.employeeId?._id,
+      email: r.employeeId?.email,
+      department: r.employeeId?.department || "N/A",
       month: r.month,
       year: r.year,
-      gross: r.gross,
-      netSalary: r.netPay,
-      deductions: r.deductions,
       status: r.status,
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
+      salaryDetails: {
+        basic: r.baseSalary,
+        hra: r.hra,
+        allowances: r.allowances,
+        deductions: r.deductions,
+        gross: r.gross,
+        netPay: r.netPay,
+      },
     }));
 
     res.status(200).json(data);
@@ -136,6 +144,7 @@ export const getPayrollHistory = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch payroll history" });
   }
 };
+
 
 export const markAsPaid = async (req, res) => {
   try {
