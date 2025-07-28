@@ -33,11 +33,11 @@ const PayrollDashboard = () => {
 
   useEffect(() => {
   fetchPayrollData();
-// eslint-disable-next-line react-hooks/exhaustive-deps
 if (selectedPayslip) {
     navigate("/payslip", { state: { data: selectedPayslip } });
     setSelectedPayslip(null); // Reset after navigation to prevent re-triggers
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [monthFilter, selectedPayslip, navigate]);
 
   const fetchPayrollData = async () => {

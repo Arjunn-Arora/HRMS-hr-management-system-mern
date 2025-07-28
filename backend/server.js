@@ -10,6 +10,7 @@ import attendanceRoutes from './routes/attendanceRoutes.js';
 import teamLeadRoutes from "./routes/teamLeadRoutes.js";
 import leaveRoutes from "./routes/leaveRoutes.js"
 import payrollRoutes from "./routes/payrollRoutes.js"
+import documentRoutes from "./routes/documentRoutes.js";
 
 
 const app = express();
@@ -32,6 +33,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/teamlead", teamLeadRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
+app.use("/api/documents", documentRoutes);
 
 app.get('/', (req, res) => res.send("HRMS API Running..."));
 

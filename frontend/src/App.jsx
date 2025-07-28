@@ -34,6 +34,8 @@ import LeaveDashboard from "./pages/LeaveDashboard";
 import PayrollDashboard from "./pages/PayrollDashboard";
 import GeneratePayrollModal from "./pages/GeneratePayrollModel";
 import PayslipPage from "./pages/PayslipPage";
+import HRDocumentsPage from "./components/HRDocumentsPage";
+import EmployeeDocumentsPage from "./pages/EmployeeDocumentsPage";
 
 function App() {
   return (
@@ -228,6 +230,24 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <PayslipPage />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/uploads"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <HRDocumentsPage />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/documents"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <EmployeeDocumentsPage />
     </PrivateRoute>
   }
 />

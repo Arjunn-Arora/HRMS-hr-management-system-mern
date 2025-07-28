@@ -76,11 +76,11 @@ const HRDashboard = () => {
       <SidebarLink to="/hr/add-employee" icon={<FaUserPlus />} label="Add Employee" />
       <SidebarLink to="/hr/users" icon={<FaUsers />} label="View Employee" />
       <SidebarLink to="/hr/manage-roles" icon={<FaCogs />} label="Roles & Dept." />
-      <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Projects" />
+      <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Assign Projects" />
       <SidebarLink to="/hr/leaves" icon={<FaChartBar />} label="Leave Dashboard" />
       <SidebarLink to="/hr/leave-policies" icon={<FaChartBar />} label="Leave Policies" />
       <SidebarLink to="/hr/payroll" icon={<FaMoneyBillWave />} label="Payroll" />
-      <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Reports & Logs" />
+      <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Projects Dashboard" />
       <SidebarLink to="/hr/uploads" icon={<FaFileUpload />} label="Docs Upload" />
     </nav>
   </div>
@@ -148,11 +148,11 @@ const HRDashboard = () => {
             <ActionCard icon={<FaUserPlus />} label="Add Employee" to="/hr/add-employee" />
             <ActionCard icon={<FaUserPlus />} label="View Employee" to="/hr/users" />
             <ActionCard icon={<FaCogs />} label="Manage Roles" to="/hr/manage-roles" />
-            <ActionCard icon={<FaClipboardList />} label="Projects" to="/hr/assign-projects" />
+            <ActionCard icon={<FaClipboardList />} label="Assign Projects" to="/hr/assign-projects" />
             <ActionCard icon={<FaChartBar />} label="Leave Dashboard" to="/hr/leaves" />
             <ActionCard icon={<FaChartBar />} label="Policies" to="/hr/leave-policies" />
             <ActionCard icon={<FaMoneyBillWave />} label="Payroll" to="/hr/payroll" />
-            <ActionCard icon={<FaDownload />} label="Reports" to="/hr/reports" />
+            <ActionCard icon={<FaDownload />} label="Projects Dashboard" to="/hr/reports" />
             <ActionCard icon={<FaFileUpload />} label="Uploads" to="/hr/uploads" />
           </div>
         </section>
