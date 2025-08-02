@@ -1,5 +1,6 @@
 import SalaryStructure from "../models/SalaryStructure.js";
 import PayrollRecord from "../models/PayrollRecord.js";
+import User from "../models/User.js";
 
 export const createSalaryStructure = async (req, res) => {
   try {
@@ -39,9 +40,20 @@ export const generatePayslip = async (req, res) => {
   try {
     const { employee, month, year } = req.body;
 
-    // 🔧 Use correct field name from schema
-    const structure = await SalaryStructure.findOne({ employeeId: employee });
+    // Check agar payroll already exist karta hai
+    const existing = await PayrollRecord.findOne({
+      employeeId: employee,
+      month,
+      year,
+    });
 
+    if (existing) {
+      return res.status(400).json({
+        message: "Payroll already generated for this employee in the selected month.",
+      });
+    }
+
+    const structure = await SalaryStructure.findOne({ employeeId: employee });
     if (!structure) {
       return res.status(404).json({ message: "No salary structure found" });
     }
@@ -54,18 +66,53 @@ export const generatePayslip = async (req, res) => {
       employeeId: employee,
       month,
       year,
-      baseSalary,
-      hra,
-      allowances,
-      deductions,
-      gross,
-      netPay,
-      status: "Generated"
+      salaryDetails: {
+        basic: baseSalary,
+        hra,
+        allowances,
+        deductions,
+        gross,
+        netPay,
+      },
+      status: "Generated",
     });
 
     res.status(201).json(payslip);
   } catch (err) {
     res.status(500).json({ message: "Payslip generation failed", error: err.message });
+  }
+};
+
+export const getEligibleEmployees = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    if (!month || !year) {
+      return res.status(400).json({ message: "Month and year are required" });
+    }
+
+    // Sab employees lao
+    const allEmployees = await User.find(
+      { role: "employee" },
+      "_id name email department"
+    );
+
+    // Jo employees ka payroll already generate ho chuka hai unko hatao
+    const generatedPayrolls = await PayrollRecord.find({ month, year }).select("employeeId");
+    const generatedIds = generatedPayrolls.map((p) => p.employeeId.toString());
+
+    // Filter karo jo eligible hain
+    const eligible = allEmployees.filter(
+      (emp) => !generatedIds.includes(emp._id.toString())
+    );
+
+    res.status(200).json(eligible);
+  } catch (err) {
+    console.error("getEligibleEmployees Error:", err);
+    res.status(500).json({
+      message: "Failed to fetch eligible employees",
+      error: err.message,
+    });
   }
 };
 

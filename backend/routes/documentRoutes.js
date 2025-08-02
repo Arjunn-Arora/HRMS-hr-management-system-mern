@@ -25,7 +25,7 @@ router.post(
 router.get("/", authMiddleware, authorizeRoles("hr"), getAllDocuments);
 
 // Employee gets their own documents
-router.get("/employee/me", authMiddleware, authorizeRoles("employee"), getMyDocuments);
+router.get("/employee/me", authMiddleware, authorizeRoles("employee", "team_lead"), getMyDocuments);
 
 
 // File download (binary streaming)

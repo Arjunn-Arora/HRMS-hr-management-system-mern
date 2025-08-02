@@ -8,7 +8,8 @@ import {
   getPayrollSummary,
   filterPayslips,
   getPayrollHistory,
-  markAsPaid
+  markAsPaid,
+  getEligibleEmployees
 } from '../controllers/payrollController.js';
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
@@ -20,6 +21,7 @@ router.get("/summary", authMiddleware, authorizeRoles("hr"), getPayrollSummary);
 // HR: Add/Update salary structure
 router.post('/structure', authMiddleware, authorizeRoles('hr'), createSalaryStructure);
 router.get('/structures', authMiddleware, authorizeRoles('hr'), getAllStructures);
+router.get('/eligible', authMiddleware, authorizeRoles('hr'), getEligibleEmployees);
 
 // HR: Generate payslip
 router.post('/generate', authMiddleware, authorizeRoles('hr'), generatePayslip);
