@@ -11,7 +11,7 @@ export const loginUser = async (req, res) => {
   const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "development",
+    secure: process.env.NODE_ENV === "production",
     sameSite: "Lax",
     maxAge: 24 * 60 * 60 * 1000
   }).json({ message: "Login successful", user: { name: user.name, role: user.role } });
