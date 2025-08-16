@@ -16,7 +16,7 @@ import documentRoutes from "./routes/documentRoutes.js";
 const app = express();
 connectDB();
 
-app.use(cors({credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({credentials: true, origin: "https://hrms-hr-management-system-mern.vercel.app" }));
 app.use(express.json());
 app.use(cookieParser());
 
