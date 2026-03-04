@@ -16,7 +16,7 @@ export const createEmployee = async (req, res) => {
   teamLeadId: teamLeadId || null
 });
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    const link = `http://localhost:5173/verify/${token}`;
+    const link = `https://hrms-hr-management-system-mern.vercel.app/verify/${token}`;
     const html = `<h3>Welcome ${name}!</h3><p>Your account has been created. Click below to verify and set password:</p><a href="${link}">${link}</a>`;
     await sendMail(email, 'Verify Your HRMS Account', html);
     res.status(201).json({ message: 'Employee created and email sent' });
