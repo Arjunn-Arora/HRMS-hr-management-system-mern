@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import {
   FaUserCircle, FaSignOutAlt, FaEdit, FaFileAlt,
   FaBell, FaCalendarCheck, FaChartBar, FaMoneyCheckAlt,
-  FaUsers, FaClipboardList, FaTasks
+  FaUsers, FaClipboardList, FaTasks, FaHome
 } from 'react-icons/fa';
+import GlobalSidebar from '../components/GlobalSidebar';
 
 const EmployeeDashboard = () => {
   const [user, setUser] = useState(null);
@@ -48,25 +49,34 @@ const EmployeeDashboard = () => {
     window.location.href = path;
   };
 
-  return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <FaUserCircle className="text-4xl text-gray-600" />
-          <div>
-            <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
-            <p className="text-sm text-gray-500">{user.email} | {user.department || "No Department"}</p>
-          </div>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          <FaSignOutAlt /> Logout
-        </button>
-      </div>
+  const navLinks = [
+    { to: "/employee", icon: <FaHome />, label: "Dashboard" },
+    { to: "/edit-profile", icon: <FaEdit />, label: "Edit Profile" },
+    { to: "/documents", icon: <FaFileAlt />, label: "Documents" },
+    { to: "/announcements", icon: <FaBell />, label: "Announcements" },
+    { to: "/attendance", icon: <FaCalendarCheck />, label: "View Attendance" },
+    { to: "/employee/leaves", icon: <FaChartBar />, label: "View Leaves" },
+    { to: "/payslips", icon: <FaMoneyCheckAlt />, label: "Payslips" },
+  ];
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  if (isTeamLead) {
+    // Add Team Lead links
+    navLinks.push(
+      { to: "/teamlead/team-members", icon: <FaUsers />, label: "Team Members" },
+      { to: "/teamlead/projects", icon: <FaTasks />, label: "Allocated Projects" }
+    );
+  }
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      <GlobalSidebar user={user} navLinks={navLinks} onLogout={handleLogout} />
+      
+      <main className="flex-1 p-8 overflow-auto">
+        <header className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-extrabold text-gray-800">Employee Dashboard</h1>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Standard Employee Features */}
         <DashboardCard icon={<FaEdit />} title="Edit Profile" desc="Update your personal information" color="blue" onClick={() => handleRedirect('/edit-profile')} />
         <DashboardCard icon={<FaFileAlt />} title="Resume & Documents" desc="Upload or download your files" color="green" onClick={() => handleRedirect('/documents')} />
@@ -78,12 +88,12 @@ const EmployeeDashboard = () => {
         {/* Additional Team Lead Features */}
         {isTeamLead && (
           <>
-            <DashboardCard icon={<FaClipboardList />} title="Mark Attendance" desc="Mark presence for your team" color="purple" onClick={() => handleRedirect('/teamlead/attendance')} />
             <DashboardCard icon={<FaUsers />} title="Team Members" desc="See your assigned team members" color="orange" onClick={() => handleRedirect('/teamlead/team-members')} />
             <DashboardCard icon={<FaTasks />} title="Allocated Projects" desc="View your project assignments" color="teal" onClick={() => handleRedirect('/teamlead/projects')} />
           </>
         )}
       </div>
+      </main>
     </div>
   );
 };

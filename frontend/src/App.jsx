@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import HRDashboard from "./pages/HRDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
-import TeamLeadAttendance from "./pages/TeamLeadAttendance";
+
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 import CreateEmployee from "./pages/CreateEmployee";
 import SetPassword from "./pages/SetPassword";
@@ -70,14 +70,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-  path="/teamlead/attendance"
-  element={
-    <PrivateRoute allowedRoles={["team_lead"]}>
-      <TeamLeadAttendance />
-    </PrivateRoute>
-  }
-/>
+
 
 <Route
   path="/attendance"

@@ -9,6 +9,7 @@ import {
   FaClipboardList, FaSignOutAlt, FaHome, 
   FaUser, 
 } from 'react-icons/fa';
+import GlobalSidebar from '../components/GlobalSidebar';
 
 const HRDashboard = () => {
   const [user, setUser] = useState(null);
@@ -62,40 +63,23 @@ const HRDashboard = () => {
     return <div className="flex h-screen items-center justify-center text-xl">Loading...</div>;
   }
 
+  const navLinks = [
+    { to: "/hr", icon: <FaHome />, label: "Dashboard" },
+    { to: "/hr/add-employee", icon: <FaUserPlus />, label: "Add Employee" },
+    { to: "/hr/users", icon: <FaUsers />, label: "View Employee" },
+    { to: "/hr/manage-roles", icon: <FaCogs />, label: "Roles & Dept." },
+    { to: "/hr/assign-projects", icon: <FaClipboardList />, label: "Assign Projects" },
+    { to: "/hr/leaves", icon: <FaChartBar />, label: "Leave Dashboard" },
+    { to: "/hr/leave-policies", icon: <FaChartBar />, label: "Leave Policies" },
+    { to: "/hr/payroll", icon: <FaMoneyBillWave />, label: "Payroll" },
+    { to: "/hr/reports", icon: <FaDownload />, label: "Projects Dashboard" },
+    { to: "/hr/uploads", icon: <FaFileUpload />, label: "Docs Upload" },
+  ];
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-1/5 bg-white shadow-lg px-6 pt-9 flex flex-col justify-between">
-  {/* Top Section - Profile and Nav */}
-  <div>
-    <div className="mb-8 text-center">
-      <h2 className="text-2xl font-semibold">{user.name}</h2>
-      <p className="mt-1 text-gray-500">HR Manager</p>
-    </div>
-    <nav className="space-y-1">
-      <SidebarLink to="/hr" icon={<FaHome />} label="Dashboard" />
-      <SidebarLink to="/hr/add-employee" icon={<FaUserPlus />} label="Add Employee" />
-      <SidebarLink to="/hr/users" icon={<FaUsers />} label="View Employee" />
-      <SidebarLink to="/hr/manage-roles" icon={<FaCogs />} label="Roles & Dept." />
-      <SidebarLink to="/hr/assign-projects" icon={<FaClipboardList />} label="Assign Projects" />
-      <SidebarLink to="/hr/leaves" icon={<FaChartBar />} label="Leave Dashboard" />
-      <SidebarLink to="/hr/leave-policies" icon={<FaChartBar />} label="Leave Policies" />
-      <SidebarLink to="/hr/payroll" icon={<FaMoneyBillWave />} label="Payroll" />
-      <SidebarLink to="/hr/reports" icon={<FaDownload />} label="Projects Dashboard" />
-      <SidebarLink to="/hr/uploads" icon={<FaFileUpload />} label="Docs Upload" />
-    </nav>
-  </div>
-
-  {/* Bottom Section - Logout */}
-  <div className="mb-6">
-    <button
-      onClick={logout}
-      className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2 py-2 rounded-lg"
-    >
-      <FaSignOutAlt /> Logout
-    </button>
-  </div>
-</aside>
+      <GlobalSidebar user={user} navLinks={navLinks} onLogout={logout} />
 
 
       {/* Main Content */}
