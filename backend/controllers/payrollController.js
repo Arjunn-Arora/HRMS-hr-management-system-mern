@@ -66,14 +66,12 @@ export const generatePayslip = async (req, res) => {
       employeeId: employee,
       month,
       year,
-      salaryDetails: {
-        basic: baseSalary,
-        hra,
-        allowances,
-        deductions,
-        gross,
-        netPay,
-      },
+      baseSalary,
+      hra,
+      allowances,
+      deductions,
+      gross,
+      netPay,
       status: "Generated",
     });
 

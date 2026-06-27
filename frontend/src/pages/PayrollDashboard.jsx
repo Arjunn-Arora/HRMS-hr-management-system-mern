@@ -28,6 +28,7 @@ const PayrollDashboard = () => {
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [editStructure, setEditStructure] = useState(null);
   const [selectedPayslip, setSelectedPayslip] = useState(null);
+  const [refreshStructures, setRefreshStructures] = useState(0);
 
   const navigate = useNavigate();
 
@@ -68,6 +69,7 @@ if (selectedPayslip) {
       toast.success("Salary structure saved");
       setShowSalaryModal(false);
       setEditStructure(null);
+      setRefreshStructures(prev => prev + 1);
     } catch (err) {
       toast.error(err.message);
     }
@@ -252,6 +254,7 @@ if (selectedPayslip) {
 
           {/* Salary Structure Table */}
           <SalaryStructureTable
+            refreshTrigger={refreshStructures}
             onEdit={(structure) => {
               setEditStructure(structure);
               setShowSalaryModal(true);
