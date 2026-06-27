@@ -21,7 +21,8 @@ export const createEmployee = async (req, res) => {
     await sendMail(email, 'Verify Your HRMS Account', html);
     res.status(201).json({ message: 'Employee created and email sent' });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    // res.status(500).json({ message: "Server error", error: error.message });
+    console.error(error);
   }
 };
 
