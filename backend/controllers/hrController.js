@@ -5,13 +5,13 @@ import sendMail from "../utils/sendMail.js";
 
 export const createEmployee = async (req, res) => {
   try {
-    const { name, email, teamLeadId, department } = req.body;
+    const { name, email, role, teamLeadId, department } = req.body;
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "Employee already exists" });
     const newUser = await User.create({
   name,
   email,
-  role: 'employee',
+  role: role || 'employee',
   department,
   teamLeadId: teamLeadId || null
 });

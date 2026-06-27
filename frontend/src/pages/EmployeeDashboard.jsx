@@ -29,6 +29,7 @@ const EmployeeDashboard = () => {
   const handleLogout = async () => {
   try {
     await axios.post("/auth/logout", {}, { withCredentials: true });
+    localStorage.removeItem("token");
     toast.success("Logged out successfully");
 
     // Force reload to clear browser cache

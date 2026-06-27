@@ -54,6 +54,7 @@ const HRDashboard = () => {
 
   const logout = async () => {
     await axios.post('/auth/logout', {}, { withCredentials: true });
+    localStorage.removeItem("token");
     navigate('/');
   };
 

@@ -20,6 +20,7 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", form);
       toast.success(res.data.message);
+      if (res.data.token) localStorage.setItem("token", res.data.token);
       const role = res.data.user.role;
       navigate(role === "admin" ? "/admin" : role === "hr" ? "/hr" : "/employee");
     } catch (err) {
