@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const sendMail = async (to, subject, html) => {
+const sendMail = async (to, subject, html) => {
   await axios.post(
     "https://api.brevo.com/v3/smtp/email",
     {
@@ -8,11 +8,7 @@ export const sendMail = async (to, subject, html) => {
         name: "HRMS",
         email: process.env.SENDER_EMAIL,
       },
-      to: [
-        {
-          email: to,
-        },
-      ],
+      to: [{ email: to }],
       subject,
       htmlContent: html,
     },
@@ -24,3 +20,5 @@ export const sendMail = async (to, subject, html) => {
     }
   );
 };
+
+export default sendMail;
