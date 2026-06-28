@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
-import { FaPlus, FaTrash, FaUsers } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaUsers, FaClock } from 'react-icons/fa';
 
 const ManageShifts = () => {
   const [shifts, setShifts] = useState([]);
