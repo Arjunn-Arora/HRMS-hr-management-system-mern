@@ -14,6 +14,8 @@ const ViewAttendance = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const [wfhRequests, setWfhRequests] = useState([]);
+  const [showWfhModal, setShowWfhModal] = useState(false);
+  const [wfhForm, setWfhForm] = useState({ date: "", reason: "" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -317,8 +319,6 @@ const ViewAttendance = () => {
     );
   };
 
-  const [showWfhModal, setShowWfhModal] = useState(false);
-  const [wfhForm, setWfhForm] = useState({ date: "", reason: "" });
 
   const handleApplyWfh = async (e) => {
     e.preventDefault();

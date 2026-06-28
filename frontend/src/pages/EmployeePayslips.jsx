@@ -58,11 +58,11 @@ const EmployeePayslips = () => {
 
     // Salary Details Table
     const tableData = [
-      ["Base Salary", `$${payslip.baseSalary.toFixed(2)}`],
-      ["HRA", `$${payslip.hra.toFixed(2)}`],
-      ["Allowances", `$${payslip.allowances.toFixed(2)}`],
-      ["Gross Earnings", `$${payslip.gross.toFixed(2)}`],
-      ["Deductions", `$${payslip.deductions.toFixed(2)}`],
+      ["Base Salary", `$${(payslip.baseSalary || 0).toFixed(2)}`],
+      ["HRA", `$${(payslip.hra || 0).toFixed(2)}`],
+      ["Allowances", `$${(payslip.allowances || 0).toFixed(2)}`],
+      ["Gross Earnings", `$${(payslip.gross || 0).toFixed(2)}`],
+      ["Deductions", `$${(payslip.deductions || 0).toFixed(2)}`],
     ];
 
     doc.autoTable({
@@ -80,7 +80,7 @@ const EmployeePayslips = () => {
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(0, 128, 0);
-    doc.text(`Net Pay: $${payslip.netPay.toFixed(2)}`, 14, finalY + 15);
+    doc.text(`Net Pay: $${(payslip.netPay || 0).toFixed(2)}`, 14, finalY + 15);
 
     // Footer
     doc.setFontSize(10);
@@ -126,9 +126,9 @@ const EmployeePayslips = () => {
               payslips.map(ps => (
                 <tr key={ps._id} className="hover:bg-gray-50 transition-colors">
                   <td className="p-4 font-medium text-gray-800">{ps.month} {ps.year}</td>
-                  <td className="p-4 text-gray-600">${ps.gross.toFixed(2)}</td>
-                  <td className="p-4 text-red-500">-${ps.deductions.toFixed(2)}</td>
-                  <td className="p-4 font-bold text-green-600">${ps.netPay.toFixed(2)}</td>
+                  <td className="p-4 text-gray-600">${(ps.gross || 0).toFixed(2)}</td>
+                  <td className="p-4 text-red-500">-${(ps.deductions || 0).toFixed(2)}</td>
+                  <td className="p-4 font-bold text-green-600">${(ps.netPay || 0).toFixed(2)}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                       ps.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
