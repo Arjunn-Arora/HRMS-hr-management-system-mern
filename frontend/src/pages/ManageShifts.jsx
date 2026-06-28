@@ -6,7 +6,16 @@ import { FaPlus, FaTrash, FaUsers, FaClock } from 'react-icons/fa';
 const ManageShifts = () => {
   const [shifts, setShifts] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [newShift, setNewShift] = useState({ name: '', startTime: '', endTime: '' });
+  const [newShift, setNewShift] = useState({ name: '' });
+  
+  const [startHour, setStartHour] = useState('09');
+  const [startMin, setStartMin] = useState('00');
+  const [startAmPm, setStartAmPm] = useState('AM');
+
+  const [endHour, setEndHour] = useState('05');
+  const [endMin, setEndMin] = useState('00');
+  const [endAmPm, setEndAmPm] = useState('PM');
+
   const [assignData, setAssignData] = useState({ shiftId: '', userIds: [] });
 
   useEffect(() => {
@@ -36,10 +45,23 @@ const ManageShifts = () => {
   const handleCreateShift = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/shifts', newShift, { withCredentials: true });
+      const convertTo24Hour = (hour, min, ampm) => {
+        let h = parseInt(hour, 10);
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return `${h.toString().padStart(2, '0')}:${min}`;
+      };
+      
+      const startTime = convertTo24Hour(startHour, startMin, startAmPm);
+      const endTime = convertTo24Hour(endHour, endMin, endAmPm);
+      
+      const shiftData = { name: newShift.name, startTime, endTime };
+      await axios.post('/shifts', shiftData, { withCredentials: true });
       toast.success("Shift created successfully");
       fetchShifts();
-      setNewShift({ name: '', startTime: '', endTime: '' });
+      setNewShift({ name: '' });
+      setStartHour('09'); setStartMin('00'); setStartAmPm('AM');
+      setEndHour('05'); setEndMin('00'); setEndAmPm('PM');
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to create shift");
     }
@@ -101,12 +123,34 @@ const ManageShifts = () => {
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">Start Time</label>
-                <input type="time" required value={newShift.startTime} onChange={e => setNewShift({...newShift, startTime: e.target.value})} className="mt-1 w-full p-2 border rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                <div className="flex gap-1">
+                  <select value={startHour} onChange={e => setStartHour(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    {Array.from({length: 12}, (_, i) => String(i + 1).padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}
+                  </select>
+                  <select value={startMin} onChange={e => setStartMin(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <select value={startAmPm} onChange={e => setStartAmPm(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">End Time</label>
-                <input type="time" required value={newShift.endTime} onChange={e => setNewShift({...newShift, endTime: e.target.value})} className="mt-1 w-full p-2 border rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                <div className="flex gap-1">
+                  <select value={endHour} onChange={e => setEndHour(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    {Array.from({length: 12}, (_, i) => String(i + 1).padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}
+                  </select>
+                  <select value={endMin} onChange={e => setEndMin(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <select value={endAmPm} onChange={e => setEndAmPm(e.target.value)} className="p-2 border rounded bg-white flex-1">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
               </div>
             </div>
             <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700">Save Shift</button>
