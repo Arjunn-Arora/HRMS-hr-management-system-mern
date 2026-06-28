@@ -9,7 +9,8 @@ import {
   filterPayslips,
   getPayrollHistory,
   markAsPaid,
-  getEligibleEmployees
+  getEligibleEmployees,
+  getMyPayslips
 } from '../controllers/payrollController.js';
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
@@ -27,6 +28,7 @@ router.get('/eligible', authMiddleware, authorizeRoles('hr'), getEligibleEmploye
 router.post('/generate', authMiddleware, authorizeRoles('hr'), generatePayslip);
 
 // HR & Employee: View payslips
+router.get('/my', authMiddleware, authorizeRoles('employee', 'team_lead'), getMyPayslips);
 router.get('/history', authMiddleware, authorizeRoles('hr'), getPayrollHistory);
 router.get('/payslips/filter', authMiddleware, authorizeRoles('hr'), filterPayslips);
 router.put("/pay/:id", authMiddleware, authorizeRoles("hr"), markAsPaid);

@@ -16,7 +16,7 @@ const ManageShifts = () => {
 
   const fetchShifts = async () => {
     try {
-      const res = await axios.get('/hr/shifts', { withCredentials: true });
+      const res = await axios.get('/shifts', { withCredentials: true });
       setShifts(res.data);
     } catch (err) {
       toast.error("Failed to load shifts");
@@ -25,8 +25,8 @@ const ManageShifts = () => {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get('/hr/users', { withCredentials: true });
-      // Assuming hr/users returns the array of users directly or in res.data.users
+      const res = await axios.get('/hr/employees', { withCredentials: true });
+      // Assuming hr/employees returns the array of users directly or in res.data.users
       setEmployees(res.data.users || res.data || []);
     } catch (err) {
       toast.error("Failed to load employees");
@@ -36,7 +36,7 @@ const ManageShifts = () => {
   const handleCreateShift = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/hr/shifts', newShift, { withCredentials: true });
+      await axios.post('/shifts', newShift, { withCredentials: true });
       toast.success("Shift created successfully");
       fetchShifts();
       setNewShift({ name: '', startTime: '', endTime: '' });
@@ -47,7 +47,7 @@ const ManageShifts = () => {
 
   const handleDeleteShift = async (id) => {
     try {
-      await axios.delete(`/hr/shifts/${id}`, { withCredentials: true });
+      await axios.delete(`/shifts/${id}`, { withCredentials: true });
       toast.success("Shift deleted");
       fetchShifts();
     } catch (err) {
@@ -58,7 +58,7 @@ const ManageShifts = () => {
   const handleAssignShift = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/hr/shifts/assign', assignData, { withCredentials: true });
+      await axios.post('/shifts/assign', assignData, { withCredentials: true });
       toast.success("Shift assigned to selected employees");
       fetchEmployees(); // Refresh to see updated mapped shifts
     } catch (err) {

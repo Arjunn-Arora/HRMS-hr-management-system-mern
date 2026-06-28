@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance";
 import { toast } from "react-toastify";
 
 const ApplyLeave = () => {
+  const navigate = useNavigate();
   const [policies, setPolicies] = useState([]);
   const [balances, setBalances] = useState([]);
   
@@ -24,7 +26,7 @@ const ApplyLeave = () => {
     try {
       const [polRes, balRes] = await Promise.all([
         axios.get("/leaves/policy", { withCredentials: true }),
-        axios.get("/leaves/balance", { withCredentials: true })
+        axios.get("/leaves/my-balance", { withCredentials: true })
       ]);
       setPolicies(polRes.data);
       setBalances(balRes.data);
@@ -207,7 +209,7 @@ const ApplyLeave = () => {
             </div>
 
             <div className="flex justify-end gap-4 pt-4 border-t">
-              <button type="button" onClick={() => {setForm({policyId: "", startDate: "", endDate: "", reason: "", teamEmail: ""}); setBreakdown([]);}} className="px-6 py-2.5 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50">Cancel</button>
+              <button type="button" onClick={() => navigate('/employee/leaves')} className="px-6 py-2.5 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50">Cancel</button>
               <button
                 type="submit"
                 disabled={balanceAfter < 0}

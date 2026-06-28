@@ -217,3 +217,13 @@ export const filterPayslips = async (req, res) => {
   const results = await PayrollRecord.find(filter).populate('employee', 'name email');
   res.json(results);
 };
+
+export const getMyPayslips = async (req, res) => {
+  try {
+    const employeeId = req.user.userId;
+    const payslips = await PayrollRecord.find({ employeeId }).sort({ createdAt: -1 });
+    res.json(payslips);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch payslips", error: error.message });
+  }
+};

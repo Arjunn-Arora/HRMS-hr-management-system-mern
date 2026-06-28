@@ -40,8 +40,13 @@ const GlobalSidebar = ({ user, navLinks, onLogout }) => {
     if (isCheckedIn && activeCheckInTime) {
       timer = setInterval(() => {
         const now = new Date();
-        const activeDiff = now - activeCheckInTime;
-        setElapsedTime(formatTime(previousMs + activeDiff));
+        if (now.getDate() !== activeCheckInTime.getDate()) {
+           // Day has changed, refetch status from backend to reset
+           fetchAttendanceStatus();
+        } else {
+          const activeDiff = now - activeCheckInTime;
+          setElapsedTime(formatTime(previousMs + activeDiff));
+        }
       }, 1000);
     } else {
       setElapsedTime(formatTime(previousMs));

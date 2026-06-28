@@ -13,7 +13,7 @@ const ManageHolidays = () => {
 
   const fetchHolidays = async () => {
     try {
-      const res = await axios.get('/hr/holidays', { withCredentials: true });
+      const res = await axios.get('/holidays', { withCredentials: true });
       setHolidays(res.data);
     } catch (err) {
       toast.error("Failed to load holidays");
@@ -23,7 +23,7 @@ const ManageHolidays = () => {
   const handleCreateHoliday = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/hr/holidays', newHoliday, { withCredentials: true });
+      await axios.post('/holidays', newHoliday, { withCredentials: true });
       toast.success("Holiday created successfully");
       fetchHolidays();
       setNewHoliday({ name: '', date: '', type: 'Public Holiday' });
@@ -34,7 +34,7 @@ const ManageHolidays = () => {
 
   const handleDeleteHoliday = async (id) => {
     try {
-      await axios.delete(`/hr/holidays/${id}`, { withCredentials: true });
+      await axios.delete(`/holidays/${id}`, { withCredentials: true });
       toast.success("Holiday deleted");
       fetchHolidays();
     } catch (err) {

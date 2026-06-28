@@ -56,7 +56,7 @@ const EmployeeDashboard = () => {
     { to: "/announcements", icon: <FaBell />, label: "Announcements" },
     { to: "/attendance", icon: <FaCalendarCheck />, label: "View Attendance" },
     { to: "/employee/leaves", icon: <FaChartBar />, label: "View Leaves" },
-    { to: "/payslips", icon: <FaMoneyCheckAlt />, label: "Payslips" },
+    { to: "/employee/payslips", icon: <FaMoneyCheckAlt />, label: "Payslips" },
   ];
 
   if (isTeamLead) {
@@ -83,7 +83,7 @@ const EmployeeDashboard = () => {
         <DashboardCard icon={<FaBell />} title="Announcements" desc="Stay up to date with HR updates" color="yellow" onClick={() => handleRedirect('/announcements')} />
         <DashboardCard icon={<FaCalendarCheck />} title="View Attendance" desc="Track your daily presence" color="purple" onClick={() => handleRedirect('/attendance')} />
         <DashboardCard icon={<FaChartBar />} title="View Leaves" desc="View your leave stats" color="indigo" onClick={() => handleRedirect('/employee/leaves')} />
-        <DashboardCard icon={<FaMoneyCheckAlt />} title="Payslip History" desc="Check your previous salary records" color="pink" onClick={() => handleRedirect('/payslips')} />
+        <DashboardCard icon={<FaMoneyCheckAlt />} title="Payslip History" desc="Check your previous salary records" color="pink" onClick={() => handleRedirect('/employee/payslips')} />
 
         {/* Additional Team Lead Features */}
         {isTeamLead && (
