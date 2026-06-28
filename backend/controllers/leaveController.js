@@ -28,13 +28,15 @@ export const getAllLeavePolicies = async (req, res) => {
 
 export const applyLeave = async (req, res) => {
   try {
-    const { policyId, startDate, endDate, reason } = req.body;
+    const { policyId, startDate, endDate, totalDays, breakdown, reason } = req.body;
 
     const leave = await LeaveRequest.create({
       employeeId: req.user.userId,
-      leavePolicy: policyId,  // ✅ map correctly
+      leavePolicy: policyId,
       startDate,
       endDate,
+      totalDays,
+      breakdown,
       reason
     });
 
@@ -85,12 +87,7 @@ export const getMyLeaveBalance = async (req, res) => {
       );
 
       // Sum total days used
-      const used = leavesForPolicy.reduce((total, leave) => {
-        const start = new Date(leave.startDate);
-        const end = new Date(leave.endDate);
-        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1; // Inclusive
-        return total + days;
-      }, 0);
+      const used = leavesForPolicy.reduce((total, leave) => total + (leave.totalDays || 0), 0);
 
       return {
         policyName: policy.name,

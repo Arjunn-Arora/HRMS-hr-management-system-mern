@@ -7,7 +7,7 @@ import {
   FaUsers, FaCalendarAlt, FaBell, FaUserPlus, FaCogs,
   FaFileUpload, FaChartBar, FaMoneyBillWave, FaDownload,
   FaClipboardList, FaSignOutAlt, FaHome, 
-  FaUser, 
+  FaUser, FaClock
 } from 'react-icons/fa';
 import GlobalSidebar from '../components/GlobalSidebar';
 
@@ -74,6 +74,8 @@ const HRDashboard = () => {
     { to: "/hr/payroll", icon: <FaMoneyBillWave />, label: "Payroll" },
     { to: "/hr/reports", icon: <FaDownload />, label: "Projects Dashboard" },
     { to: "/hr/uploads", icon: <FaFileUpload />, label: "Docs Upload" },
+    { to: "/hr/shifts", icon: <FaClock />, label: "Manage Shifts" },
+    { to: "/hr/holidays", icon: <FaCalendarAlt />, label: "Manage Holidays" },
   ];
 
   return (
@@ -139,6 +141,8 @@ const HRDashboard = () => {
             <ActionCard icon={<FaMoneyBillWave />} label="Payroll" to="/hr/payroll" />
             <ActionCard icon={<FaDownload />} label="Projects Dashboard" to="/hr/reports" />
             <ActionCard icon={<FaFileUpload />} label="Uploads" to="/hr/uploads" />
+            <ActionCard icon={<FaClock />} label="Shifts" to="/hr/shifts" />
+            <ActionCard icon={<FaCalendarAlt />} label="Holidays" to="/hr/holidays" />
           </div>
         </section>
       </main>

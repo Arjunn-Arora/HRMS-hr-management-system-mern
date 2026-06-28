@@ -13,6 +13,9 @@ import payrollRoutes from "./routes/payrollRoutes.js"
 import documentRoutes from "./routes/documentRoutes.js";
 
 
+import shiftRoutes from "./routes/shiftRoutes.js";
+import holidayRoutes from "./routes/holidayRoutes.js";
+
 const app = express();
 connectDB();
 
@@ -25,7 +28,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use("/api/auth", authRoutes);
 app.use("/api/hr", hrRoutes);
 app.use("/api/announcement", announcementRoutes);
@@ -34,6 +36,8 @@ app.use("/api/teamlead", teamLeadRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/hr/shifts", shiftRoutes);
+app.use("/api/hr/holidays", holidayRoutes);
 
 app.get('/', (req, res) => res.send("HRMS API Running..."));
 

@@ -17,6 +17,11 @@ phone: String,
   ref: "User",
   default: null,
 },
+  shiftId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Shift",
+  default: null,
+},
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

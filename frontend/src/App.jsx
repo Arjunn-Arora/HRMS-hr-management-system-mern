@@ -24,6 +24,8 @@ import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
 import Error400 from "./pages/Error400";
 import Error500 from "./pages/Error500";
 import HRUserList from "./pages/HRUserList";
+import ManageShifts from "./pages/ManageShifts";
+import ManageHolidays from "./pages/ManageHolidays";
 import SalaryStructureModal from "./pages/SalaryStructureModel";
 // import ShowTeamMembers from "./pages/ShowTeamMembers";
 // import ShowAllocatedProjects from "./pages/ShowAllocatedProjects";
@@ -75,7 +77,7 @@ function App() {
 <Route
   path="/attendance"
   element={
-    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+    <PrivateRoute allowedRoles={["employee", "team_lead", "hr", "admin"]}>
       <ViewAttendance />
     </PrivateRoute>
   }
@@ -232,6 +234,24 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <HRDocumentsPage />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/shifts"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <ManageShifts />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/holidays"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <ManageHolidays />
     </PrivateRoute>
   }
 />

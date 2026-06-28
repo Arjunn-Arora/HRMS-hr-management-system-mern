@@ -27,25 +27,28 @@ const GlobalSidebar = ({ user, navLinks, onLogout }) => {
 
   useEffect(() => {
     let timer;
+    
+    const formatTime = (ms) => {
+      const hours = Math.floor(ms / (1000 * 60 * 60));
+      const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const previousMs = (todayTotalHours || 0) * 60 * 60 * 1000;
+
     if (isCheckedIn && activeCheckInTime) {
       timer = setInterval(() => {
         const now = new Date();
-        const diff = now - activeCheckInTime;
-        
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        setElapsedTime(
-          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-        );
+        const activeDiff = now - activeCheckInTime;
+        setElapsedTime(formatTime(previousMs + activeDiff));
       }, 1000);
     } else {
-      setElapsedTime('00:00:00');
+      setElapsedTime(formatTime(previousMs));
     }
 
     return () => clearInterval(timer);
-  }, [isCheckedIn, activeCheckInTime]);
+  }, [isCheckedIn, activeCheckInTime, todayTotalHours]);
 
   const handleCheckInOut = async () => {
     try {

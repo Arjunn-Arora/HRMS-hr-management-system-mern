@@ -42,7 +42,10 @@ export const verifyAndSetPassword = async (req, res) => {
 export const getLoggedInUser = async (req, res) => {
   try {
     // req.user contains the decoded JWT payload
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user.userId)
+      .select("-password")
+      .populate("shiftId");
+      
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({ user });
