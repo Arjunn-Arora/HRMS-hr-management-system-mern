@@ -39,6 +39,7 @@ import PayslipPage from "./pages/PayslipPage";
 import HRDocumentsPage from "./components/HRDocumentsPage";
 import EmployeeDocumentsPage from "./pages/EmployeeDocumentsPage";
 import EmployeePayslips from "./pages/EmployeePayslips";
+import HRWfhRequests from "./pages/HRWfhRequests";
 
 function App() {
   return (
@@ -258,6 +259,16 @@ function App() {
 />
 
 
+
+
+<Route
+  path="/hr/wfh-requests"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <HRWfhRequests />
+    </PrivateRoute>
+  }
+/>
 
 <Route
   path="/documents"

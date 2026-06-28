@@ -75,6 +75,15 @@ const ManageShifts = () => {
     setAssignData({ ...assignData, userIds: selected });
   };
 
+  const formatTime12Hour = (time24) => {
+    if (!time24) return '';
+    const [h, m] = time24.split(':');
+    let hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour.toString().padStart(2, '0')}:${m} ${ampm}`;
+  };
+
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Manage Shifts</h1>
@@ -115,7 +124,7 @@ const ManageShifts = () => {
                 <li key={shift._id} className="flex justify-between items-center p-3 bg-gray-50 rounded border">
                   <div>
                     <div className="font-semibold text-gray-800">{shift.name}</div>
-                    <div className="text-sm text-gray-500">{shift.startTime} - {shift.endTime}</div>
+                    <div className="text-sm text-gray-500">{formatTime12Hour(shift.startTime)} - {formatTime12Hour(shift.endTime)}</div>
                   </div>
                   <button onClick={() => handleDeleteShift(shift._id)} className="text-red-500 hover:text-red-700 p-2">
                     <FaTrash />
@@ -139,7 +148,7 @@ const ManageShifts = () => {
               <select required value={assignData.shiftId} onChange={e => setAssignData({...assignData, shiftId: e.target.value})} className="w-full p-2 border rounded">
                 <option value="">-- Choose Shift --</option>
                 {shifts.map(shift => (
-                  <option key={shift._id} value={shift._id}>{shift.name} ({shift.startTime} - {shift.endTime})</option>
+                  <option key={shift._id} value={shift._id}>{shift.name} ({formatTime12Hour(shift.startTime)} - {formatTime12Hour(shift.endTime)})</option>
                 ))}
               </select>
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../utils/axiosInstance";
 import { toast } from "react-toastify";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { FaFileDownload, FaMoneyBillWave } from "react-icons/fa";
 
 const EmployeePayslips = () => {
@@ -65,7 +65,7 @@ const EmployeePayslips = () => {
       ["Deductions", `$${(payslip.deductions || 0).toFixed(2)}`],
     ];
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 78,
       head: [["Earnings & Deductions", "Amount"]],
       body: tableData,
@@ -74,7 +74,7 @@ const EmployeePayslips = () => {
       styles: { fontSize: 11, cellPadding: 5 }
     });
 
-    const finalY = doc.lastAutoTable.finalY || 78;
+    const finalY = doc.lastAutoTable?.finalY || 78;
 
     // Net Pay
     doc.setFontSize(14);

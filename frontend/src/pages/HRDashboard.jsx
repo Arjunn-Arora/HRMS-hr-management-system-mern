@@ -17,6 +17,8 @@ const HRDashboard = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newAnnouncement, setNewAnnouncement] = useState("");
+  const [pendingLeaves, setPendingLeaves] = useState(0);
+  const [pendingWfh, setPendingWfh] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,10 +27,14 @@ const HRDashboard = () => {
         const me = await axios.get('/auth/me', { withCredentials: true });
         const emps = await axios.get('/hr/employees', { withCredentials: true });
         const anns = await axios.get('/announcement/all', { withCredentials: true });
+        const leavesRes = await axios.get('/leaves/requests', { withCredentials: true });
+        const wfhRes = await axios.get('/wfh/all', { withCredentials: true });
         setUser(me.data.user);
         setEmployeeCount(emps.data.length);
         setAnnouncements(anns.data);
-      } catch {
+        setPendingLeaves(leavesRes.data.filter(l => l.status === 'Pending').length);
+        setPendingWfh(wfhRes.data.filter(w => w.status === 'Pending').length);
+      } catch (err) {
         toast.error("Error loading dashboard");
       } finally {
         setLoading(false);
@@ -136,7 +142,8 @@ const HRDashboard = () => {
             <ActionCard icon={<FaUserPlus />} label="View Employee" to="/hr/users" />
             <ActionCard icon={<FaCogs />} label="Manage Roles" to="/hr/manage-roles" />
             <ActionCard icon={<FaClipboardList />} label="Assign Projects" to="/hr/assign-projects" />
-            <ActionCard icon={<FaChartBar />} label="Leave Dashboard" to="/hr/leaves" />
+            <ActionCard icon={<FaChartBar />} label="Leave Dashboard" to="/hr/leaves" badge={pendingLeaves} />
+            <ActionCard icon={<FaHome />} label="WFH Requests" to="/hr/wfh-requests" badge={pendingWfh} />
             <ActionCard icon={<FaChartBar />} label="Policies" to="/hr/leave-policies" />
             <ActionCard icon={<FaMoneyBillWave />} label="Payroll" to="/hr/payroll" />
             <ActionCard icon={<FaDownload />} label="Projects Dashboard" to="/hr/reports" />
@@ -175,11 +182,16 @@ const MetricCard = ({ icon, label, value }) => (
   </div>
 );
 
-const ActionCard = ({ icon, label, to }) => (
+const ActionCard = ({ icon, label, to, badge }) => (
   <div
     onClick={() => window.location.href = to}
-    className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition cursor-pointer"
+    className="relative bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition cursor-pointer"
   >
+    {badge > 0 && (
+      <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">
+        {badge}
+      </div>
+    )}
     <div className="text-indigo-600 text-4xl">{icon}</div>
     <div className="mt-3 font-medium text-gray-800">{label}</div>
   </div>

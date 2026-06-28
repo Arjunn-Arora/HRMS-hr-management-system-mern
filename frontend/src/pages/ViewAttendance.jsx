@@ -66,6 +66,15 @@ const ViewAttendance = () => {
   const isWeekend = (date) => date.getDay() === 0 || date.getDay() === 6;
   const isWFH = (dateStr) => wfhRequests.find(w => w.date === dateStr && w.status === 'Approved');
 
+  const formatTime12Hour = (time24) => {
+    if (!time24) return '';
+    const [h, m] = time24.split(':');
+    let hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour.toString().padStart(2, '0')}:${m} ${ampm}`;
+  };
+
   const renderWeekView = () => {
     // Get current week (Monday to Sunday)
     const curr = new Date();
@@ -84,7 +93,7 @@ const ViewAttendance = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-8 pb-4 border-b">
           <h2 className="text-xl font-bold text-gray-800">
-            {shift ? `${shift.name} [ ${shift.startTime} - ${shift.endTime} ]` : "No Shift Assigned"}
+            {shift ? `${shift.name} [ ${formatTime12Hour(shift.startTime)} - ${formatTime12Hour(shift.endTime)} ]` : "No Shift Assigned"}
           </h2>
         </div>
 
@@ -141,6 +150,21 @@ const ViewAttendance = () => {
             const firstCheckIn = record?.sessions?.[0]?.checkIn;
             const lastCheckOut = record?.sessions?.[record.sessions.length - 1]?.checkOut;
 
+            let isLate = false;
+            let isEarly = false;
+
+            if (shift && status === 'Present' && firstCheckIn) {
+              const checkInDate = new Date(firstCheckIn);
+              const checkInTime = `${String(checkInDate.getHours()).padStart(2, '0')}:${String(checkInDate.getMinutes()).padStart(2, '0')}`;
+              if (checkInTime > shift.startTime) isLate = true;
+
+              if (lastCheckOut) {
+                const checkOutDate = new Date(lastCheckOut);
+                const checkOutTime = `${String(checkOutDate.getHours()).padStart(2, '0')}:${String(checkOutDate.getMinutes()).padStart(2, '0')}`;
+                if (checkOutTime < shift.endTime) isEarly = true;
+              }
+            }
+
             return (
               <div key={idx} className="flex items-center group">
                 {/* Date Left */}
@@ -150,23 +174,29 @@ const ViewAttendance = () => {
                 </div>
 
                 {/* Timeline Middle */}
-                <div className="flex-1 flex items-center px-4">
+                <div className="flex-1 flex flex-col justify-center px-4">
                   {(status === 'Present' || status === 'Remote') ? (
-                    <div className="w-full flex items-center">
-                      <div className="w-20 text-sm font-semibold text-gray-600">
-                        {new Date(firstCheckIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <>
+                      <div className="w-full flex items-center">
+                        <div className="w-20 text-sm font-semibold text-gray-600">
+                          {new Date(firstCheckIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className={`flex-1 h-0.5 relative mx-4 border-t-2 ${lineColor}`}>
+                          <div className={`absolute -left-1 -top-1 w-2 h-2 rounded-full border border-white ${status === 'Remote' ? 'bg-blue-400' : 'bg-green-400'}`}></div>
+                          <div className={`absolute -right-1 -top-1 w-2 h-2 rounded-full border border-white ${status === 'Remote' ? 'bg-blue-400' : 'bg-green-400'}`}></div>
+                        </div>
+                        <div className="w-20 text-right text-sm font-semibold text-gray-600">
+                          {lastCheckOut ? new Date(lastCheckOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Active"}
+                        </div>
+                        {status === 'Remote' && (
+                          <span className={`absolute ml-[30%] px-2 py-0.5 rounded text-xs font-semibold ${bgColor} ${textColor} border ${lineColor} -translate-y-1/2`}>Remote</span>
+                        )}
                       </div>
-                      <div className={`flex-1 h-0.5 relative mx-4 border-t-2 ${lineColor}`}>
-                        <div className={`absolute -left-1 -top-1 w-2 h-2 rounded-full border border-white ${status === 'Remote' ? 'bg-blue-400' : 'bg-green-400'}`}></div>
-                        <div className={`absolute -right-1 -top-1 w-2 h-2 rounded-full border border-white ${status === 'Remote' ? 'bg-blue-400' : 'bg-green-400'}`}></div>
+                      <div className="w-full flex justify-between px-20 mt-1">
+                        <span className="text-[10px] font-bold text-red-500">{isLate ? "Late Check-in" : ""}</span>
+                        <span className="text-[10px] font-bold text-orange-500">{isEarly ? "Early Check-out" : ""}</span>
                       </div>
-                      <div className="w-20 text-right text-sm font-semibold text-gray-600">
-                        {lastCheckOut ? new Date(lastCheckOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Active"}
-                      </div>
-                      {status === 'Remote' && (
-                        <span className={`absolute ml-[30%] px-2 py-0.5 rounded text-xs font-semibold ${bgColor} ${textColor} border ${lineColor} -translate-y-1/2`}>Remote</span>
-                      )}
-                    </div>
+                    </>
                   ) : (
                     <div className={`w-full flex items-center justify-center h-0.5 border-t-2 ${lineColor} relative`}>
                       <span className={`px-3 py-1 rounded text-xs font-semibold ${bgColor} ${textColor} border ${lineColor} -translate-y-1/2`}>
