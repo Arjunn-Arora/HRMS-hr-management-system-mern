@@ -57,6 +57,10 @@ const EmployeeDashboard = () => {
     { to: "/attendance", icon: <FaCalendarCheck />, label: "View Attendance" },
     { to: "/employee/leaves", icon: <FaChartBar />, label: "View Leaves" },
     { to: "/employee/payslips", icon: <FaMoneyCheckAlt />, label: "Payslips" },
+    { to: "/performance/goals", icon: <FaTasks />, label: "My Goals" },
+    { to: "/performance/kras", icon: <FaClipboardList />, label: "My KRAs" },
+    { to: "/performance/skills", icon: <FaChartBar />, label: "My Skills" },
+    { to: "/performance/appraisals", icon: <FaUsers />, label: "My Appraisals" },
   ];
 
   if (isTeamLead) {

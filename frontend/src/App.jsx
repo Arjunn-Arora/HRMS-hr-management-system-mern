@@ -40,6 +40,11 @@ import HRDocumentsPage from "./components/HRDocumentsPage";
 import EmployeeDocumentsPage from "./pages/EmployeeDocumentsPage";
 import EmployeePayslips from "./pages/EmployeePayslips";
 import HRWfhRequests from "./pages/HRWfhRequests";
+import MyGoals from "./pages/performance/MyGoals";
+import MyKRAs from "./pages/performance/MyKRAs";
+import MySkills from "./pages/performance/MySkills";
+import MyAppraisals from "./pages/performance/MyAppraisals";
+import HRManageAppraisals from "./pages/performance/HRManageAppraisals";
 
 function App() {
   return (
@@ -284,6 +289,51 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["employee", "team_lead"]}>
       <EmployeePayslips />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/manage-appraisals"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <HRManageAppraisals />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/performance/goals"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <MyGoals />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/performance/kras"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <MyKRAs />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/performance/skills"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <MySkills />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/performance/appraisals"
+  element={
+    <PrivateRoute allowedRoles={["employee", "team_lead"]}>
+      <MyAppraisals />
     </PrivateRoute>
   }
 />

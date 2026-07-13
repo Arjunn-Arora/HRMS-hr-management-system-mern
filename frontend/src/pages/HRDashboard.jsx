@@ -82,6 +82,11 @@ const HRDashboard = () => {
     { to: "/hr/uploads", icon: <FaFileUpload />, label: "Docs Upload" },
     { to: "/hr/shifts", icon: <FaClock />, label: "Manage Shifts" },
     { to: "/hr/holidays", icon: <FaCalendarAlt />, label: "Manage Holidays" },
+    { to: "/hr/manage-appraisals", icon: <FaUsers />, label: "Appraisals Admin" },
+    { to: "/performance/goals", icon: <FaClipboardList />, label: "My Goals" },
+    { to: "/performance/kras", icon: <FaClipboardList />, label: "My KRAs" },
+    { to: "/performance/skills", icon: <FaChartBar />, label: "My Skills" },
+    { to: "/performance/appraisals", icon: <FaUsers />, label: "My Appraisals" },
   ];
 
   return (
