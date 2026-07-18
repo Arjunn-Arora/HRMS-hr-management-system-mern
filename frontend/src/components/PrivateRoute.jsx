@@ -10,8 +10,17 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     const checkAuth = async () => {
       try {
         const res = await axios.get("/auth/me");
-        const userRole = res.data.user.role;
+        const user = res.data.user;
+        const userRole = user.role;
+        
         if (allowedRoles.includes(userRole)) {
+          // If onboarding is triggered but not completed, restrict access to only edit-profile
+          if ((userRole === 'employee' || userRole === 'team_lead') && user.onboardingStatus === 'Onboarding Triggered') {
+            if (window.location.pathname !== '/edit-profile') {
+              window.location.href = '/edit-profile';
+              return;
+            }
+          }
           setAuthorized(true);
         } else {
           setAuthorized(false);

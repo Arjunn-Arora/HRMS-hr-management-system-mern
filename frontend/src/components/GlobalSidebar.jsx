@@ -130,7 +130,12 @@ const GlobalSidebar = ({ user, navLinks, onLogout }) => {
               }
             >
               <span className="text-xl">{link.icon}</span>
-              <span>{link.label}</span>
+              <span className="flex-1">{link.label}</span>
+              {link.badge !== undefined && link.badge > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {link.badge}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

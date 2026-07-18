@@ -1,4 +1,3 @@
-// hrRoutes.js
 import express from "express";
 import {
   createEmployee,
@@ -8,6 +7,9 @@ import {
   deleteEmployee,
   getAllTeamLeads,
   assignProjectToTeamLead,
+  getPendingOnboardingUsers,
+  getOnboardingCount,
+  triggerOnboarding
 } from "../controllers/hrController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
@@ -32,7 +34,12 @@ router.post("/create-employee", createEmployee);
 router.get("/employees", getEmployees);
 router.get("/employee/:id", getEmployeeById);
 router.delete("/employee/:id", deleteEmployee);
-router.get("/team-leads", authMiddleware, authorizeRoles("hr"), getAllTeamLeads);
-router.post("/assign-project", authMiddleware, authorizeRoles("hr", "admin"), assignProjectToTeamLead);
+router.get("/team-leads", getAllTeamLeads);
+router.post("/assign-project", assignProjectToTeamLead);
+
+// Onboarding Routes
+router.get("/onboarding-pending", getPendingOnboardingUsers);
+router.get("/onboarding-count", getOnboardingCount);
+router.put("/trigger-onboarding/:id", triggerOnboarding);
 
 export default router;

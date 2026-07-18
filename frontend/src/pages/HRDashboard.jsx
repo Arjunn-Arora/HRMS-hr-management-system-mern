@@ -21,6 +21,8 @@ const HRDashboard = () => {
   const [pendingWfh, setPendingWfh] = useState(0);
   const navigate = useNavigate();
 
+  const [pendingOnboarding, setPendingOnboarding] = useState(0);
+
   useEffect(() => {
     async function load() {
       try {
@@ -29,11 +31,14 @@ const HRDashboard = () => {
         const anns = await axios.get('/announcement/all', { withCredentials: true });
         const leavesRes = await axios.get('/leaves/requests', { withCredentials: true });
         const wfhRes = await axios.get('/wfh/all', { withCredentials: true });
+        const onboardingRes = await axios.get('/hr/onboarding-count', { withCredentials: true });
+        
         setUser(me.data.user);
         setEmployeeCount(emps.data.length);
         setAnnouncements(anns.data);
         setPendingLeaves(leavesRes.data.filter(l => l.status === 'Pending').length);
         setPendingWfh(wfhRes.data.filter(w => w.status === 'Pending').length);
+        setPendingOnboarding(onboardingRes.data.count || 0);
       } catch (err) {
         toast.error("Error loading dashboard");
       } finally {
@@ -41,6 +46,15 @@ const HRDashboard = () => {
       }
     }
     load();
+
+    const handleOnboardingChange = () => {
+      axios.get('/hr/onboarding-count', { withCredentials: true })
+        .then(res => setPendingOnboarding(res.data.count || 0))
+        .catch(() => {});
+    };
+
+    window.addEventListener('onboardingStatusChanged', handleOnboardingChange);
+    return () => window.removeEventListener('onboardingStatusChanged', handleOnboardingChange);
   }, []);
 
   const postAnnouncement = async () => {
@@ -71,6 +85,7 @@ const HRDashboard = () => {
 
   const navLinks = [
     { to: "/hr", icon: <FaHome />, label: "Dashboard" },
+    { to: "/hr/onboarding", icon: <FaUserPlus />, label: "Onboarding", badge: pendingOnboarding },
     { to: "/hr/add-employee", icon: <FaUserPlus />, label: "Add Employee" },
     { to: "/hr/users", icon: <FaUsers />, label: "View Employee" },
     { to: "/hr/manage-roles", icon: <FaCogs />, label: "Roles & Dept." },

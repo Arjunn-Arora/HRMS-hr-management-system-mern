@@ -24,6 +24,7 @@ import EmployeeLeaveDashboard from "./pages/EmployeeLeaveDashboard";
 import Error400 from "./pages/Error400";
 import Error500 from "./pages/Error500";
 import HRUserList from "./pages/HRUserList";
+import HROnboarding from "./pages/HROnboarding";
 import ManageShifts from "./pages/ManageShifts";
 import ManageHolidays from "./pages/ManageHolidays";
 import SalaryStructureModal from "./pages/SalaryStructureModel";
@@ -104,6 +105,15 @@ function App() {
   element={
     <PrivateRoute allowedRoles={["hr"]}>
       <CreateEmployee />
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/hr/onboarding"
+  element={
+    <PrivateRoute allowedRoles={["hr"]}>
+      <HROnboarding />
     </PrivateRoute>
   }
 />

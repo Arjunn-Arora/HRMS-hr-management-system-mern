@@ -8,6 +8,14 @@ export const loginUser = async (req, res) => {
   if (!user || !user.isVerified) return res.status(401).json({ message: "Invalid or unverified account" });
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+  if (
+    (user.role === 'employee' || user.role === 'team_lead') && 
+    user.onboardingStatus === 'Pending HR Action'
+  ) {
+    return res.status(403).json({ message: "Your Onboarding is Pending. Please wait!" });
+  }
+
   const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
   res.cookie("token", token, {
     httpOnly: true,
@@ -32,6 +40,7 @@ export const verifyAndSetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
     user.isVerified = true;
+    user.onboardingStatus = 'Pending HR Action';
     await user.save();
     res.status(200).json({ message: "Account verified and password set successfully" });
   } catch (error) {
