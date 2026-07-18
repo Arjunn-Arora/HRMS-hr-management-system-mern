@@ -37,7 +37,7 @@ const CreateEmployee = () => {
     if (!name || !email || !role || !department) return toast.error("All fields are required");
 
     if (role === "employee" && !teamLeadId) {
-      return toast.error("Please assign a team lead for this employee.");
+      return toast.error("Please assign a reporting manager for this employee.");
     }
 
     try {
@@ -74,7 +74,7 @@ const CreateEmployee = () => {
           
           {form.role === "employee" && (
             <select name="teamLeadId" value={form.teamLeadId} onChange={handleChange} className="w-full p-2 border rounded">
-              <option value="">-- Select Team Lead --</option>
+              <option value="">-- Select Reporting Manager --</option>
               {teamLeads.map((lead) => (
                 <option key={lead._id} value={lead._id}>{lead.name} ({lead.department})</option>
               ))}

@@ -62,8 +62,7 @@ export const createEmployee = async (req, res) => {
     await sendMail(email, 'Verify Your HRMS Account', html);
     res.status(201).json({ message: 'Employee created and email sent' });
   } catch (error) {
-    // res.status(500).json({ message: "Server error", error: error.message });
-    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -76,7 +75,15 @@ export const getEmployees = async (req, res) => {
   }
 };
 
-// Get single employee by ID
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const getEmployeeById = async (req, res) => {
   try {
     const employee = await User.findById(req.params.id).select("-password");
@@ -89,7 +96,6 @@ export const getEmployeeById = async (req, res) => {
   }
 };
 
-// Update employee details
 export const updateEmployee = async (req, res) => {
   try {
     const { 
@@ -99,7 +105,7 @@ export const updateEmployee = async (req, res) => {
     } = req.body;
     
     const employee = await User.findById(req.params.id);
-    if (!employee || employee.role !== 'employee') {
+    if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
 
@@ -135,15 +141,13 @@ export const updateEmployee = async (req, res) => {
   }
 };
 
-
-// Delete employee
 export const deleteEmployee = async (req, res) => {
   try {
     const employee = await User.findById(req.params.id);
-    if (!employee || employee.role !== 'employee') {
+    if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
-    await employee.remove();
+    await User.deleteOne({ _id: employee._id });
     res.json({ message: "Employee deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -167,37 +171,32 @@ export const assignProjectToTeamLead = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Validate team lead exists
     const lead = await User.findById(teamLeadId);
     if (!lead || lead.role !== "team_lead") {
       return res.status(404).json({ message: "Team lead not found" });
     }
 
-    // Find all employees under this team lead
     const teamMembers = await User.find({ teamLeadId });
     const employeeIds = teamMembers.map(emp => emp._id);
 
-    // Create the project
     const project = await Project.create({
-  name: projectName,
-  startDate,
-  deadline,
-  assignedTo: teamLeadId,
-  employees: [] // empty initially
-});
+      name: projectName,
+      startDate,
+      deadline,
+      assignedTo: teamLeadId,
+      employees: []
+    });
 
-
-await User.updateMany(
-  { _id: { $in: employeeIds } },
-  {
-    projectName: project.name,
-    projectId: project._id
-  }
-);
+    await User.updateMany(
+      { _id: { $in: employeeIds } },
+      {
+        projectName: project.name,
+        projectId: project._id
+      }
+    );
 
     res.status(201).json({ message: "Project assigned successfully", project });
   } catch (error) {
-    console.error("Error in assigning project:", error);
     res.status(500).json({ message: "Failed to assign project", error: error.message });
   }
 };

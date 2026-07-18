@@ -2,7 +2,7 @@ import User from "../models/User.js";
 
 export const updateProfile = async (req, res) => {
   try {
-    const { dob, presentAddress, permanentAddress, phone, maritalStatus } = req.body;
+    const { dob, presentAddress, permanentAddress, phone, maritalStatus, pan, aadhar } = req.body;
 
     const userId = req.user.userId;
     if (!userId) {
@@ -19,6 +19,8 @@ export const updateProfile = async (req, res) => {
     if (permanentAddress !== undefined) user.permanentAddress = permanentAddress;
     if (phone !== undefined) user.phone = phone;
     if (maritalStatus !== undefined) user.maritalStatus = maritalStatus;
+    if (pan !== undefined) user.pan = pan;
+    if (aadhar !== undefined) user.aadhar = aadhar;
 
     // Complete Onboarding if triggered
     if (user.onboardingStatus === 'Onboarding Triggered') {

@@ -2,6 +2,7 @@ import express from "express";
 import {
   createEmployee,
   getEmployees,
+  getAllUsers,
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
@@ -32,6 +33,7 @@ router.put(
 
 router.post("/create-employee", createEmployee);
 router.get("/employees", getEmployees);
+router.get("/all-users", getAllUsers);
 router.get("/employee/:id", getEmployeeById);
 router.delete("/employee/:id", deleteEmployee);
 router.get("/team-leads", getAllTeamLeads);

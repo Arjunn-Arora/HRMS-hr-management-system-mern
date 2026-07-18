@@ -11,6 +11,8 @@ const EditProfile = () => {
     permanentAddress: "",
     phone: "",
     maritalStatus: "",
+    pan: "",
+    aadhar: "",
   });
   const [showPan, setShowPan] = useState(false);
   const [showAadhar, setShowAadhar] = useState(false);
@@ -31,7 +33,9 @@ const EditProfile = () => {
           presentAddress: userData.presentAddress || userData.address || "",
           permanentAddress: userData.permanentAddress || "",
           phone: userData.phone || "",
-          maritalStatus: userData.maritalStatus || ""
+          maritalStatus: userData.maritalStatus || "",
+          pan: userData.pan || "",
+          aadhar: userData.aadhar || ""
         });
       } catch (err) {
         toast.error(err.message);
@@ -149,26 +153,8 @@ const EditProfile = () => {
               </div>
             )}
             <div>
-              <label className="block text-sm text-gray-500">PAN</label>
-              <div className="flex items-center gap-2 font-medium">
-                {showPan ? (user.pan || "N/A") : maskString(user.pan)}
-                {user.pan && (
-                  <button onClick={() => setShowPan(!showPan)} className="text-gray-500 hover:text-indigo-600">
-                    {showPan ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                )}
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm text-gray-500">Aadhar</label>
-              <div className="flex items-center gap-2 font-medium">
-                {showAadhar ? (user.aadhar || "N/A") : maskString(user.aadhar)}
-                {user.aadhar && (
-                  <button onClick={() => setShowAadhar(!showAadhar)} className="text-gray-500 hover:text-indigo-600">
-                    {showAadhar ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                )}
-              </div>
+              <label className="block text-sm text-gray-500">Reporting Manager</label>
+              <div className="font-medium">{user.teamLeadId ? "Assigned" : "N/A"}</div>
             </div>
           </div>
         </div>
@@ -202,6 +188,16 @@ const EditProfile = () => {
             <div>
               <label className="block text-sm text-gray-500 mb-1">Phone Number</label>
               <input type="text" name="phone" value={form.phone} onChange={handleChange} className="w-full p-2 border rounded" placeholder="Phone Number" />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">PAN</label>
+              <input type="text" name="pan" value={form.pan} onChange={handleChange} className="w-full p-2 border rounded" placeholder="PAN Number" />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-500 mb-1">Aadhar</label>
+              <input type="text" name="aadhar" value={form.aadhar} onChange={handleChange} className="w-full p-2 border rounded" placeholder="Aadhar Number" />
             </div>
 
             <div>

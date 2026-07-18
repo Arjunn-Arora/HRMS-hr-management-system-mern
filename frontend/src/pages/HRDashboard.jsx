@@ -10,6 +10,7 @@ import {
   FaUser, FaClock
 } from 'react-icons/fa';
 import GlobalSidebar from '../components/GlobalSidebar';
+import OrganizationChart from '../components/OrganizationChart';
 
 const HRDashboard = () => {
   const [user, setUser] = useState(null);
@@ -155,7 +156,7 @@ const HRDashboard = () => {
           </div>
         </section>
 
-        <section>
+        <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <ActionCard icon={<FaUserPlus />} label="Add Employee" to="/hr/add-employee" />
@@ -171,6 +172,11 @@ const HRDashboard = () => {
             <ActionCard icon={<FaClock />} label="Shifts" to="/hr/shifts" />
             <ActionCard icon={<FaCalendarAlt />} label="Holidays" to="/hr/holidays" />
           </div>
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold mb-4">Organization Chart</h2>
+          <OrganizationChart />
         </section>
       </main>
     </div>
