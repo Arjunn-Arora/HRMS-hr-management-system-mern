@@ -113,7 +113,7 @@ const HRDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
         <header className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-extrabold text-gray-800">Welcome, {user.name}</h1>
+          <h1 className="text-4xl font-extrabold text-gray-800">Welcome, {user?.name || "HR"}</h1>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
